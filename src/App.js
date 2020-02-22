@@ -3,19 +3,13 @@ import {
   Route,
   Link,
   Switch,
-
 } from 'react-router-dom'
 import { Button } from 'semantic-ui-react'
 import DoctorShow from './components/DoctorShow'
 import Doctors from './containers/Doctors'
 import Video from './components/Video'
 import Login from './components/Login'
-
 import './App.css';
-
-
-const geoCodeUrl = ``
-
 
 export default class App extends React.Component {
 
@@ -29,9 +23,39 @@ export default class App extends React.Component {
     apiDoctors: []
   }
 
-  onSubmit = () => {
+  onSubmit = (formData) => {
+    if (Object.keys(formData).length > 2) {
+      this.createUser(formData)
+    } else {
+      this.findUser(formData)
+    }
+  }
 
+  findUser = formData => {
+    fetch(`http://localhost:3000/users`).then(resp => resp.json())
+      .then(data => console.log(data))
+  }
 
+  setCurrentUser = () => {
+
+  }
+
+  createUser = (formData) => {
+    fetch(`http://localhost:3000/users`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "accepts": "application.json"
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+        password_confirmation: formData.passwordConfirmation
+
+      })
+    }).then(resp => resp.json())
+      .then(data => console.log(data))
+      .catch(error => console.log(error))
   }
 
   onSignUp = () => {
