@@ -9,7 +9,6 @@ import { Button } from 'semantic-ui-react'
 import DoctorShow from './components/DoctorShow'
 import Doctors from './containers/Doctors'
 import Video from './components/Video'
-import Login from './components/Login'
 
 import './App.css';
 
@@ -20,22 +19,10 @@ const geoCodeUrl = ``
 export default class App extends React.Component {
 
   state = {
-    isLoggedIn: false,
-    register: false,
-    currentUser: "",
     lat: 0,
     lng: 0,
     doctors: [],
     apiDoctors: []
-  }
-
-  onSubmit = () => {
-
-
-  }
-
-  onSignUp = () => {
-    this.setState({ register: !this.state.register })
   }
   // request to Google GeoCode API to turn string into Longitude/Latitude
   toGeoCode = (formData) => {
@@ -102,19 +89,16 @@ export default class App extends React.Component {
   // }
 
   render() {
-    console.log(this.state.apiDoctors)
+
     return (
       <div>
-        <Button color="red" as={Link} to="/doctors">Search</Button>
-        <Button color="red" as={Link} to="/login">Sign Up / Login</Button>
-
+        <Button as={Link} to="/doctors">Search</Button>
 
         {/* <NavBar logOut={this.logOut} currentUser={this.state.currentUser} logUserIn={this.logUserIn} currentCart={this.state.currentCart} /> */}
         <Switch>
           <Route exact path='/doctors' render={routerProps => <Doctors apiDoctors={this.state.apiDoctors} doctors={this.state.doctors} {...routerProps} toGeoCode={this.toGeoCode} />} />
           <Route exact path='/doctors/:id' render={routerProps => <DoctorShow  {...routerProps} apiDoctors={this.state.apiDoctors} />} />
           <Route exact path='/video' render={routerProps => <Video  {...routerProps} apiDoctors={this.state.apiDoctors} />} />
-          <Route exact path='/login' render={routerProps => <Login isLoggedIn={this.state.isLoggedIn} onSignUp={this.onSignUp} onSubmit={this.onSubmit} register={this.state.register} {...routerProps} />} />
         </Switch>
       </div>
     );
