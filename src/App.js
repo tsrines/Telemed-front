@@ -39,6 +39,7 @@ export default class App extends React.Component {
   }
   // request to Google GeoCode API to turn string into Longitude/Latitude
   toGeoCode = (formData) => {
+    console.log(formData)
 
     fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=${process.env.REACT_APP_GOOGLE_GEOCODE_API_KEY}`)
       .then(resp => resp.json())
@@ -120,5 +121,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-
