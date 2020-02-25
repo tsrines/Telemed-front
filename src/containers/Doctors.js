@@ -12,7 +12,8 @@ class Doctors extends React.Component {
   state = {
     address: "",
     ailment: "",
-    miles: ""
+    miles: "",
+
   }
 
   onChange = (e) => {
@@ -28,7 +29,8 @@ class Doctors extends React.Component {
   }
 
   render() {
-    console.log(this.state)
+
+
     let displayDoctors = this.props.doctors.map(doctor => <DoctorCard apiDoctors={this.props.apiDoctors} key={doctor.id} {...doctor} />)
     return (
       <div>
