@@ -3,20 +3,23 @@ import {
   Route,
   Link,
   Switch,
+  withRouter,
 } from 'react-router-dom'
 import { Button } from 'semantic-ui-react'
 import DoctorShow from './components/DoctorShow'
 import Doctors from './containers/Doctors'
 import Video from './components/Video'
 import Login from './components/Login'
+import Profile from './components/Profile'
+
 import './App.css';
 
-export default class App extends React.Component {
+class App extends React.Component {
 
   state = {
     isLoggedIn: false,
     register: false,
-    currentUser: "",
+    currentUser: {},
     lat: 0,
     lng: 0,
     doctors: [],
@@ -24,23 +27,10 @@ export default class App extends React.Component {
   }
 
   onSubmit = (formData) => {
-    if (Object.keys(formData).length > 2) {
-      this.createUser(formData)
-    } else {
-      this.findUser(formData)
-    }
+    this.logInOrSignUp(formData)
   }
 
-  findUser = formData => {
-    fetch(`http://localhost:3000/users`).then(resp => resp.json())
-      .then(data => console.log(data))
-  }
-
-  setCurrentUser = () => {
-
-  }
-
-  createUser = (formData) => {
+  logInOrSignUp = (formData) => {
     fetch(`http://localhost:3000/users`, {
       method: "POST",
       headers: {
@@ -54,8 +44,24 @@ export default class App extends React.Component {
 
       })
     }).then(resp => resp.json())
-      .then(data => console.log(data))
-      .catch(error => console.log(error))
+      .then(data => {
+        this.setState({
+          ...this.state,
+          currentUser: {
+            id: data.id,
+            email: data.email,
+            address: data.address,
+            password: data.password,
+            passwordConfirmation: data.password_confirmation,
+            firstName: data.first_name,
+            lastName: data.last_name
+          },
+          isLoggedIn: true
+        })
+      }
+
+      )
+
   }
 
   onSignUp = () => {
@@ -126,12 +132,46 @@ export default class App extends React.Component {
 
   // }
 
+  patchUser = (userData) => {
+    console.log(this.state.currentUser.id)
+    fetch(`http://localhost:3000/users/${this.state.currentUser.id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+        "accepts": "application/json"
+      },
+      body: JSON.stringify({
+        email: userData.email,
+        password: userData.password,
+        password_confirmation: userData.passwordConfirmation,
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        address: userData.address,
+
+      })
+    }).then(resp => resp.json())
+      .then(data =>
+        this.setState({
+          ...this.state,
+          currentUser: {
+            id: data.id,
+            email: data.email,
+            address: data.address,
+            password: data.password,
+            passwordConfirmation: data.password_confirmation,
+            firstName: data.first_name,
+            lastName: data.last_name
+          }
+        }, () => console.log(this.state.currentUser)))
+  }
+
   render() {
     console.log(this.state.apiDoctors)
     return (
       <div>
         <Button color="red" as={Link} to="/doctors">Search</Button>
         <Button color="red" as={Link} to="/login">Sign Up / Login</Button>
+        {this.state.isLoggedIn && <Button color="red" as={Link} to="/profile">Profile</Button>}
 
 
         {/* <NavBar logOut={this.logOut} currentUser={this.state.currentUser} logUserIn={this.logUserIn} currentCart={this.state.currentCart} /> */}
@@ -140,8 +180,11 @@ export default class App extends React.Component {
           <Route exact path='/doctors/:id' render={routerProps => <DoctorShow  {...routerProps} apiDoctors={this.state.apiDoctors} />} />
           <Route exact path='/video' render={routerProps => <Video  {...routerProps} apiDoctors={this.state.apiDoctors} />} />
           <Route exact path='/login' render={routerProps => <Login isLoggedIn={this.state.isLoggedIn} onSignUp={this.onSignUp} onSubmit={this.onSubmit} register={this.state.register} {...routerProps} />} />
+          <Route exact path='/profile' render={routerProps => <Profile patchUser={this.patchUser} currentUser={this.state.currentUser} isLoggedIn={this.state.isLoggedIn} {...routerProps} />} />
         </Switch>
       </div>
     );
   }
 }
+
+export default withRouter(App)
