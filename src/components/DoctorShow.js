@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Header, Card, Button, Divider, Icon, Image } from 'semantic-ui-react'
+import { Grid, Container, Header, Message, Button, Divider, Segment } from 'semantic-ui-react'
 
 
 
@@ -19,15 +19,25 @@ class DoctorShow extends React.Component {
   render() {
 
     let apiDoc = this.props.apiDoctors.find(doctor => doctor.uid === this.props.match.params.id)
-
+    console.log(apiDoc)
     return (
       <div>
-        <Container textAlign='center'>
-          <Header>{apiDoc.profile.first_name} {apiDoc.profile.last_name} {apiDoc.profile.title}</Header>
-          <Divider />
-          <Button onClick={() => this.props.history.push('/video')} primary>Video Call</Button>
-          <Card.Description>{apiDoc.profile.bio}</Card.Description>
-        </Container>
+        <Grid columns={2} textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+          <Grid.Row style={{ maxWidth: 450 }}>
+            <Grid.Column>
+              <Segment >
+                <Header>{apiDoc.profile.first_name} {apiDoc.profile.last_name} {apiDoc.profile.title}</Header>
+                <Divider />
+                <Message>Phone Number: {apiDoc.practices[0].phones[0].number}</Message>
+                <Button onClick={() => this.props.history.push('/video')} color="red">Video Call</Button>
+
+              </Segment >
+            </Grid.Column>
+            <Grid.Column>
+              <Message>{apiDoc.profile.bio}</Message>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     )
   }
