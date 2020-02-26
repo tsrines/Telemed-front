@@ -12,6 +12,7 @@ import Video from './components/Video'
 import Login from './components/Login'
 import Profile from './components/Profile'
 
+
 import './App.css';
 
 class App extends React.Component {
@@ -57,11 +58,15 @@ class App extends React.Component {
             lastName: data.last_name
           },
           isLoggedIn: true
-        })
+        }, () => this.props.history.push('/'))
       }
 
       )
 
+  }
+
+  logOut = () => {
+    this.setState({ isLoggedIn: false, currentUser: {} }, () => this.props.history.push('/'))
   }
 
   onSignUp = () => {
@@ -94,19 +99,40 @@ class App extends React.Component {
       }).catch((error) => {
         console.log(error)
       })
-    // this.setState({ doctors: data.data }, () => this.postDoctors(this.state.doctors)))
 
+
+  }
+
+  imageApi = (firstName, lastName, title) => {
+    // debugger
+    fetch(`https://serpapi.com/search?q=${firstName}%20${lastName},%20${title}&tbm=isch&ijn=0&api_key=${process.env.REACT_APP_SERP_API_KEY}`)
+    .then(resp => {resp.json()})
+    .then(data => {
+      debugger
+      return data.images_results[0].original
+    })
+    .catch(err => {
+      // debugger
+      console.error(err)
+    })
   }
 
   parseDoctors = (doctorsArray) => {
 
     let doctors = []
     doctorsArray.map(element => {
+      
+
       try {
         let doctorHash = {}
         doctorHash.id = element.uid
+        doctorHash.image = this.imageApi(element.profile.first_name, element.profile.last_name, element.profile.title)
         doctorHash.firstName = element.profile.first_name
         doctorHash.lastName = element.profile.last_name
+        doctorHash.title = element.profile.title
+        doctorHash.gender = element.profile.gender
+        doctorHash.phone = element.practices[0].phones[0].number
+
         doctorHash.specialty = element.specialties[0].name
         doctors.push(doctorHash)
       }
@@ -166,12 +192,14 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.state.apiDoctors)
+    console.log(this.state.doctors)
     return (
       <div>
         <Button color="red" as={Link} to="/doctors">Search</Button>
-        <Button color="red" as={Link} to="/login">Sign Up / Login</Button>
+        {!this.state.isLoggedIn && <Button color="red" as={Link} to="/login">Sign Up / Login</Button>}
         {this.state.isLoggedIn && <Button color="red" as={Link} to="/profile">Profile</Button>}
+        {this.state.isLoggedIn && <Button color="red" onClick={this.logOut}>Logout</Button>}
+
 
 
         {/* <NavBar logOut={this.logOut} currentUser={this.state.currentUser} logUserIn={this.logUserIn} currentCart={this.state.currentCart} /> */}
