@@ -31,7 +31,7 @@ class Doctors extends React.Component {
   render() {
 
 
-    let displayDoctors = this.props.doctors.map(doctor => <DoctorCard apiDoctors={this.props.apiDoctors} key={doctor.id} {...doctor} />)
+    let displayDoctors = this.props.doctors.map(doctor => <DoctorCard createDoctor={this.props.createDoctor} apiDoctors={this.props.apiDoctors} key={doctor.id} {...doctor} />)
     return (
       <div>
         <Form onSubmit={this.onSubmit}>

@@ -15,13 +15,22 @@ class DoctorCard extends React.Component {
 
 
   doctorShow = (id) => {
+    let apiDoc = this.props.apiDoctors.find(doctor => doctor.uid === id)
+
+    this.props.createDoctor(apiDoc)
     this.props.history.push(`/doctors/${id}`)
   }
 
   render() {
+
+    let capitalGender
     console.log(this.props.gender)
-    let gender = this.props.gender
-    let capitalGender = gender.charAt(0).toUpperCase() + gender.slice(1)
+    if (this.props.gender) {
+      let gender = this.props.gender
+      capitalGender = gender.charAt(0).toUpperCase() + gender.slice(1)
+    } else {
+      capitalGender = "Unknown"
+    }
 
     return (
       <div>
@@ -34,7 +43,7 @@ class DoctorCard extends React.Component {
               {this.props.specialty}
             </Card.Description>
             <Card.Meta>
-              <span>{capitalGender} </span>
+              <span>{capitalGender}</span>
             </Card.Meta>
 
 

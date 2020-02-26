@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Container, Header, Message, Button, Divider, Segment } from 'semantic-ui-react'
+import { Grid, Rating, Header, Message, Button, Divider, Segment } from 'semantic-ui-react'
 
 
 
@@ -29,6 +29,7 @@ class DoctorShow extends React.Component {
                 <Header>{apiDoc.profile.first_name} {apiDoc.profile.last_name} {apiDoc.profile.title}</Header>
                 <Divider />
                 <Message>Phone Number: {apiDoc.practices[0].phones[0].number}</Message>
+                <Rating onClick={() => this.props.favorite(apiDoc)}/>
                 <Button onClick={() => this.props.history.push('/video')} color="red">Video Call</Button>
 
               </Segment >

@@ -24,8 +24,57 @@ class App extends React.Component {
     lat: 0,
     lng: 0,
     doctors: [],
-    apiDoctors: []
+    apiDoctors: [],
+    favoriteDoctors: []
   }
+
+  createDoctor = (doctor) => {
+    let doctorObject = {
+      api_id: doctor.uid,
+      first_name: doctor.profile.first_name,
+      last_name: doctor.profile.last_name,
+      title: doctor.profile.title,
+      gender: doctor.profile.gender,
+      bio: doctor.profile.bio,
+      phone_number: doctor.practices[0].phones[0].number
+    }
+    fetch(`http://localhost:3000/doctors`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "accepts": "application/json"
+      },
+      body: JSON.stringify(doctorObject)
+    }).then(resp => resp.json())
+      .then(data => this.setState({
+        ...this.state,
+        currentUser: {
+          ...this.state.currentUser,
+          favoriteDoctors: [data, ...this.state.favoriteDoctors]
+        }
+
+      }))
+    console.log("doctor object: ", doctor, this.state.currentUser.id)
+  }
+
+  favorite = (doctor) => {
+    
+    let favoriteObject = {
+      user_id: this.state.currentUser.id,
+      doctor_id: this.state.currentUser.favoriteDoctors[0].id
+    }
+    fetch(`http://localhost:3000/favorites`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "accepts": "application/json"
+      },
+      body: JSON.stringify(favoriteObject)
+    }).then(resp => resp.json())
+      .then(data => console.log(data))
+
+  }
+
 
   onSubmit = (formData) => {
     this.logInOrSignUp(formData)
@@ -74,7 +123,7 @@ class App extends React.Component {
   }
   // request to Google GeoCode API to turn string into Longitude/Latitude
   toGeoCode = (formData) => {
-    console.log(formData)
+
 
     fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=${process.env.REACT_APP_GOOGLE_GEOCODE_API_KEY}`)
       .then(resp => resp.json())
@@ -106,27 +155,27 @@ class App extends React.Component {
   imageApi = (firstName, lastName, title) => {
     // debugger
     fetch(`https://serpapi.com/search?q=${firstName}%20${lastName},%20${title}&tbm=isch&ijn=0&api_key=${process.env.REACT_APP_SERP_API_KEY}`)
-    .then(resp => {resp.json()})
-    .then(data => {
-      debugger
-      return data.images_results[0].original
-    })
-    .catch(err => {
-      // debugger
-      console.error(err)
-    })
+      .then(resp => { resp.json() })
+      .then(data => {
+        debugger
+        return data.images_results[0].original
+      })
+      .catch(err => {
+        // debugger
+        console.error(err)
+      })
   }
 
   parseDoctors = (doctorsArray) => {
 
     let doctors = []
     doctorsArray.map(element => {
-      
+
 
       try {
         let doctorHash = {}
         doctorHash.id = element.uid
-        doctorHash.image = this.imageApi(element.profile.first_name, element.profile.last_name, element.profile.title)
+        // doctorHash.image = this.imageApi(element.profile.first_name, element.profile.last_name, element.profile.title)
         doctorHash.firstName = element.profile.first_name
         doctorHash.lastName = element.profile.last_name
         doctorHash.title = element.profile.title
@@ -159,7 +208,7 @@ class App extends React.Component {
   // }
 
   patchUser = (userData) => {
-    console.log(this.state.currentUser.id)
+
     fetch(`http://localhost:3000/users/${this.state.currentUser.id}`, {
       method: "PATCH",
       headers: {
@@ -192,7 +241,7 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.state.doctors)
+    // console.log(this.state.doctors)
     return (
       <div>
         <Button color="red" as={Link} to="/doctors">Search</Button>
@@ -204,8 +253,8 @@ class App extends React.Component {
 
         {/* <NavBar logOut={this.logOut} currentUser={this.state.currentUser} logUserIn={this.logUserIn} currentCart={this.state.currentCart} /> */}
         <Switch>
-          <Route exact path='/doctors' render={routerProps => <Doctors apiDoctors={this.state.apiDoctors} doctors={this.state.doctors} {...routerProps} toGeoCode={this.toGeoCode} />} />
-          <Route exact path='/doctors/:id' render={routerProps => <DoctorShow  {...routerProps} apiDoctors={this.state.apiDoctors} />} />
+          <Route exact path='/doctors' render={routerProps => <Doctors createDoctor={this.createDoctor} apiDoctors={this.state.apiDoctors} doctors={this.state.doctors} {...routerProps} toGeoCode={this.toGeoCode} />} />
+          <Route exact path='/doctors/:id' render={routerProps => <DoctorShow  {...routerProps} apiDoctors={this.state.apiDoctors} favorite={this.favorite} />} />
           <Route exact path='/video' render={routerProps => <Video  {...routerProps} apiDoctors={this.state.apiDoctors} />} />
           <Route exact path='/login' render={routerProps => <Login isLoggedIn={this.state.isLoggedIn} onSignUp={this.onSignUp} onSubmit={this.onSubmit} register={this.state.register} {...routerProps} />} />
           <Route exact path='/profile' render={routerProps => <Profile patchUser={this.patchUser} currentUser={this.state.currentUser} isLoggedIn={this.state.isLoggedIn} {...routerProps} />} />
