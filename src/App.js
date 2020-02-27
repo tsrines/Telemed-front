@@ -29,7 +29,8 @@ class App extends React.Component {
   }
 
   createDoctor = (doctor) => {
-    let doctorObject = {
+    let doctorObj = {
+
       api_id: doctor.uid,
       first_name: doctor.profile.first_name,
       last_name: doctor.profile.last_name,
@@ -37,6 +38,8 @@ class App extends React.Component {
       gender: doctor.profile.gender,
       bio: doctor.profile.bio,
       phone_number: doctor.practices[0].phones[0].number
+
+
     }
     fetch(`http://localhost:3000/doctors`, {
       method: "POST",
@@ -44,7 +47,7 @@ class App extends React.Component {
         "content-type": "application/json",
         "accepts": "application/json"
       },
-      body: JSON.stringify(doctorObject)
+      body: JSON.stringify(doctorObj)
     }).then(resp => resp.json())
       .then(data => this.setState({
         ...this.state,
@@ -58,10 +61,11 @@ class App extends React.Component {
   }
 
   favorite = (doctor) => {
-    
+
     let favoriteObject = {
       user_id: this.state.currentUser.id,
-      doctor_id: this.state.currentUser.favoriteDoctors[0].id
+      doctor_id: this.state.currentUser.favoriteDoctors[0].id,
+      api_id: doctor.uid
     }
     fetch(`http://localhost:3000/favorites`, {
       method: "POST",
@@ -104,7 +108,8 @@ class App extends React.Component {
             password: data.password,
             passwordConfirmation: data.password_confirmation,
             firstName: data.first_name,
-            lastName: data.last_name
+            lastName: data.last_name,
+            favoriteDoctors: data.favorites
           },
           isLoggedIn: true
         }, () => this.props.history.push('/'))
@@ -157,7 +162,7 @@ class App extends React.Component {
     fetch(`https://serpapi.com/search?q=${firstName}%20${lastName},%20${title}&tbm=isch&ijn=0&api_key=${process.env.REACT_APP_SERP_API_KEY}`)
       .then(resp => { resp.json() })
       .then(data => {
-        debugger
+
         return data.images_results[0].original
       })
       .catch(err => {
@@ -241,7 +246,7 @@ class App extends React.Component {
   }
 
   render() {
-    // console.log(this.state.doctors)
+    console.log(this.state.currentUser.favoriteDoctors)
     return (
       <div>
         <Button color="red" as={Link} to="/doctors">Search</Button>
@@ -254,7 +259,7 @@ class App extends React.Component {
         {/* <NavBar logOut={this.logOut} currentUser={this.state.currentUser} logUserIn={this.logUserIn} currentCart={this.state.currentCart} /> */}
         <Switch>
           <Route exact path='/doctors' render={routerProps => <Doctors createDoctor={this.createDoctor} apiDoctors={this.state.apiDoctors} doctors={this.state.doctors} {...routerProps} toGeoCode={this.toGeoCode} />} />
-          <Route exact path='/doctors/:id' render={routerProps => <DoctorShow  {...routerProps} apiDoctors={this.state.apiDoctors} favorite={this.favorite} />} />
+          <Route exact path='/doctors/:id' render={routerProps => <DoctorShow currentUser={this.state.currentUser} {...routerProps} apiDoctors={this.state.apiDoctors} favorite={this.favorite} />} />
           <Route exact path='/video' render={routerProps => <Video  {...routerProps} apiDoctors={this.state.apiDoctors} />} />
           <Route exact path='/login' render={routerProps => <Login isLoggedIn={this.state.isLoggedIn} onSignUp={this.onSignUp} onSubmit={this.onSubmit} register={this.state.register} {...routerProps} />} />
           <Route exact path='/profile' render={routerProps => <Profile patchUser={this.patchUser} currentUser={this.state.currentUser} isLoggedIn={this.state.isLoggedIn} {...routerProps} />} />

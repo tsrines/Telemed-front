@@ -24,7 +24,7 @@ class DoctorCard extends React.Component {
   render() {
 
     let capitalGender
-    console.log(this.props.gender)
+    console.log(this.props)
     if (this.props.gender) {
       let gender = this.props.gender
       capitalGender = gender.charAt(0).toUpperCase() + gender.slice(1)
