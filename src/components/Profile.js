@@ -7,6 +7,8 @@ import {
   Form,
   Input
 } from 'semantic-ui-react'
+import DoctorCard from './DoctorCard'
+import ProfileDoc from './ProfileDoc'
 
 class Profile extends React.Component {
 
@@ -30,18 +32,20 @@ class Profile extends React.Component {
 
     let userData = this.state
     this.props.patchUser(userData)
-    this.props.history.push('/')
+    this.props.history.push('/search')
     alert("Profile has been updated!")
   }
 
   render() {
-    console.log(this.props.currentUser)
+    let profileDoctors = this.props.currentUser.doctors.map(doctor => <ProfileDoc key={doctor.id} {...doctor} />)
+
     return (
-      <Container textAlign='center'>
+      <div>
+      <Container textAlign='left'>
 
 
         <Header>{this.props.currentUser.email}</Header>
-
+        
         <Divider />
 
         <Form >
@@ -71,8 +75,10 @@ class Profile extends React.Component {
           </Form.Group>
         </Form> */}
 
-
+          {profileDoctors}  
       </Container >
+      {/* <Container textAlign="right"></Container> */}
+      </div>
     )
   }
 }

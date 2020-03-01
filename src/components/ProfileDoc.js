@@ -8,32 +8,36 @@ import { withRouter } from 'react-router-dom'
 
 
 
-class DoctorCard extends React.Component {
-  doctorShow = (id) => {
-    let apiDoc = this.props.apiDoctors.find(doctor => doctor.uid === id)
+class ProfileDoc extends React.Component {
 
-    this.props.createDoctor(apiDoc)
+
+
+
+
+  doctorShow = (id) => {
+    // let apiDoc = this.props.apiDoctors.find(doctor => doctor.uid === id)
+
+
     this.props.history.push(`/doctors/${id}`)
   }
 
   render() {
 
-
     let capitalGender
-    // console.log(this.props)
+
     if (this.props.gender) {
       let gender = this.props.gender
       capitalGender = gender.charAt(0).toUpperCase() + gender.slice(1)
     } else {
       capitalGender = "Unknown"
     }
-
+    console.log(this.props)
     return (
       <div>
-        <Card onClick={() => this.doctorShow(this.props.id)}>
+        <Card onClick={() => this.doctorShow(this.props.api_id)}>
           <Image src={this.props.image} wrapped ui={false} />
           <Card.Content>
-            <Card.Header>{this.props.firstName} {this.props.lastName} {this.props.title}</Card.Header>
+            <Card.Header>{this.props.first_name} {this.props.last_name} {this.props.title}</Card.Header>
             <Card.Header> </Card.Header>
             <Card.Description>
               {this.props.specialty}
@@ -56,4 +60,4 @@ class DoctorCard extends React.Component {
   }
 }
 
-export default withRouter(DoctorCard)
+export default withRouter(ProfileDoc)
