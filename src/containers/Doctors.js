@@ -3,9 +3,11 @@ import {
   Input,
   Form,
   Card,
-  Button
+  Button,
+  Grid
 } from 'semantic-ui-react'
 import DoctorCard from '../components/DoctorCard'
+import { withRouter } from 'react-router-dom'
 
 class Doctors extends React.Component {
 
@@ -34,20 +36,25 @@ class Doctors extends React.Component {
     let displayDoctors = this.props.doctors.map(doctor => <DoctorCard createDoctor={this.props.createDoctor} apiDoctors={this.props.apiDoctors} key={doctor.id} {...doctor} />)
     return (
       <div>
-        <Form onSubmit={this.onSubmit}>
-          <Input required name="address" onChange={(e) => this.onChange(e)} type="text" placeholder="Address" value={this.state.address}></Input>
-          <Input required name="ailment" onChange={(e) => this.onChange(e)} type="text" placeholder="Ailment?" value={this.state.ailment}></Input>
-          <Input required name="miles" onChange={(e) => this.onChange(e)} type="number" placeholder="Miles?" value={this.state.miles}></Input>
-          <Button color="red" type="submit" value="Get Doctors">Get Doctors</Button>
-        </Form>
-        <br></br>
-        <Card.Group itemsPerRow={4}>
-          {displayDoctors}
-        </Card.Group>
+        <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+          {/* <Grid.Column style={{ maxWidth: 900 }}> */}
+
+       
+
+          {/* </Grid.Column> */}
+          <br></br>
+          <br></br>
+          <br></br>
+          <Card.Group itemsPerRow={4}>
+            {displayDoctors}
+          </Card.Group>
+        </Grid>
+
+
       </div>
 
     )
   }
 }
 
-export default Doctors
+export default withRouter(Doctors)

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Form, Grid, Header, Image, Segment } from 'semantic-ui-react'
+import { withRouter } from 'react-router-dom'
 
 
 class LoginForm extends React.Component {
@@ -29,7 +30,7 @@ class LoginForm extends React.Component {
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as='h2' color='red' textAlign='center'>
             <Image src='../favicon.ico' />
-            Log-in to your account
+            Telemed 
           </Header>
           <Form size='large'>
             <Segment stacked>
@@ -80,4 +81,4 @@ class LoginForm extends React.Component {
 }
 
 
-export default LoginForm
+export default withRouter(LoginForm)
