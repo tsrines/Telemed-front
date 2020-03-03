@@ -18,18 +18,15 @@ class DoctorShow extends React.Component {
 
 
   isFavorite = () => {
-    
-    
-    let favoriteArray = this.props.currentUser.doctors.filter(doctor => doctor.api_id === this.props.match.params.id)
-      
-      
 
+
+    let favoriteArray = this.props.currentUser.doctors.filter(doctor => doctor.id == this.props.match.params.id)
     if (favoriteArray.length > 0) {
       this.setState({
         favorite: 1
       })
     }
-  
+    debugger
   }
   // let apiDoc = this.props.apiDoctors.find(doctor => doctor.uid === this.props.match.params.id)
   // if (Array.isArray(this.props.currentUser.userDoctors) && this.props.currentUser.userDoctors.length > 0) {
@@ -44,8 +41,7 @@ class DoctorShow extends React.Component {
 
 
   state = {
-    favorite: 0,
-
+    favorite: 0
   }
 
   favoriteHandler = () => {
@@ -54,49 +50,72 @@ class DoctorShow extends React.Component {
     })
   }
 
-  favorite = () => {
-    // this.setState({favorite: !this.state.favorite})
+  docCheck = () => {
+    let doc
+    if (this.props.doctors.length > 0) {
+      doc = this.props.doctors.find(doctor => doctor.id == this.props.match.params.id)
+      if (!!doc) {
+        this.renderDocJsx(doc)
+      } 
+    } else {
+      doc = this.props.currentUser.doctors.find(doctor => doctor.id == this.props.match.params.id)
+      if (!!doc) {
+        this.renderDocJsx(doc)
+      }
+    }
   }
 
+
   componentDidMount() {
-    if (Array.isArray(this.props.currentUser.doctors)){
+    if (Array.isArray(this.props.currentUser.doctors)) {
       this.isFavorite()
     }
   }
 
-  rate = (e, data, apiDoc) => {
+  rate = (e, data, doc) => {
     this.setState({
       favorite: data.rating
-    }, () => this.props.heart(apiDoc))
+    }, () => this.props.heart(doc))
   }
 
   render() {
+    let doc
+    doc = this.props.currentUser.doctors.find(doctor => doctor.id == this.props.match.params.id)
+    console.log("doc after currentUser find:", doc)
+    if (doc == undefined) {
+      doc = this.props.doctors.find(doctor => doctor.id == this.props.match.params.id)
+    }
+
+  
 
 
-    let apiDoc = this.props.apiDoctors.find(doctor => doctor.uid === this.props.match.params.id)
+    console.log("this.props.doctors ", this.props.doctors)
+    console.log("this.props.match ", this.props.match)
+    console.log("this.props.match.params.id: ", this.props.match.params.id)
+    console.log("doc: ", doc)
+    console.log("props from DoctorShow", this.props)
+    console.log("this.props.currentUser", this.props.currentUser)
+    debugger
+
+
 
 
     return (
+      // <div>Hello</div>
 
       <div>
         <Grid columns={2} textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
           <Grid.Row style={{ maxWidth: 450 }}>
             <Grid.Column>
               <Segment >
-                <Header>{apiDoc.profile.first_name} {apiDoc.profile.last_name} {apiDoc.profile.title}</Header>
+                <Header>{doc.first_name ? doc.first_name : doc.firstName} {doc.last_name ? doc.last_name : doc.lastName} {doc.title}</Header>
                 <Divider />
-                <Message>Phone Number: {apiDoc.practices[0].phones[0].number}</Message>
-                <Rating onRate={(e,data) => this.rate(e, data, apiDoc)}  icon="heart" rating={this.state.favorite} maxRating={1}  size="huge" />
-                {/* <Rating.Icon onClick={() => this.props.heart(apiDoc)}/> */}
-
-
-
-
-
+                <Message>Phone Number: {doc.phone_number}</Message>
+                <Rating onRate={(e, data) => this.rate(e, data, doc)} icon="heart" rating={this.state.favorite} maxRating={1} size="huge" />
               </Segment >
             </Grid.Column>
             <Grid.Column>
-              <Message>{apiDoc.profile.bio}</Message>
+              <Message>{doc.bio}</Message>
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -105,10 +124,10 @@ class DoctorShow extends React.Component {
   }
 }
 
-DoctorShow.defaultProps = {
-  currentUser: {
-    userDoctors: []
-  }
-};
+// DoctorShow.defaultProps = {
+//   currentUser: {
+//     userDoctors: []
+//   }
+// };
 
 export default DoctorShow

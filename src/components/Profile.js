@@ -8,10 +8,9 @@ import {
   Input
 } from 'semantic-ui-react'
 import DoctorCard from './DoctorCard'
-import ProfileDoc from './ProfileDoc'
+
 
 class Profile extends React.Component {
-
   state = {
     email: this.props.currentUser.email,
     password: this.props.currentUser.password,
@@ -19,7 +18,6 @@ class Profile extends React.Component {
     firstName: this.props.currentUser.firstName,
     lastName: this.props.currentUser.lastName,
     address: this.props.currentUser.address
-
   }
 
   onChange = e => {
@@ -29,7 +27,6 @@ class Profile extends React.Component {
   }
 
   submitEdit = () => {
-
     let userData = this.state
     this.props.patchUser(userData)
     this.props.history.push('/search')
@@ -37,47 +34,35 @@ class Profile extends React.Component {
   }
 
   render() {
-    let profileDoctors = this.props.currentUser.doctors.map(doctor => <ProfileDoc key={doctor.id} {...doctor} />)
-
+    let profileDoctors = this.props.currentUser.doctors.map(doctor => <DoctorCard key={doctor.id} {...doctor} />)
     return (
       <div>
-      <Container textAlign='left'>
-
-
-        <Header>{this.props.currentUser.email}</Header>
-        
-        <Divider />
-
-        <Form >
-          <Input placeholder="Email" name="email" type="text" value={this.state.email} onChange={(e) => this.onChange(e)}></Input>
-        </Form>
-        <Form>
-          <Input placeholder="Password" name="password" type="password" value={this.state.password} onChange={(e) => this.onChange(e)}></Input>
-        </Form>
-        <Form>
-          <Input placeholder="Password Confirmation" name="passwordConfirmation" type="password" value={this.state.passwordConfirmation || ""} onChange={(e) => this.onChange(e)}></Input>
-        </Form>
-        <Form>
-          <Input placeholder="First Name" name="firstName" type="text" value={this.state.firstName || ""} onChange={(e) => this.onChange(e)}></Input>
-        </Form>
-        <Form>
-          <Input placeholder="Last Name" name="lastName" type="text" value={this.state.lastName || ""} onChange={(e) => this.onChange(e)}></Input>
-        </Form>
-        <Form>
-          <Input placeholder="Address" name="address" type="text" value={this.state.address || ""} onChange={(e) => this.onChange(e)}></Input>
-        </Form>
-        <Form>
-          <Button color='red' onClick={this.submitEdit}>Submit</Button>
-        </Form>
-        {/* <Form>
-          <Form.Group>
-            <Form.Input name="email" type="text" value={this.state.email} onChange={(e) => this.onChange(e)}>Email</Form.Input>
-          </Form.Group>
-        </Form> */}
-
-          {profileDoctors}  
-      </Container >
-      {/* <Container textAlign="right"></Container> */}
+        <Container textAlign='left'>
+          <Header>{this.props.currentUser.email}</Header>
+          <Divider />
+          <Form >
+            <Input placeholder="Email" name="email" type="text" value={this.state.email} onChange={(e) => this.onChange(e)}></Input>
+          </Form>
+          <Form>
+            <Input placeholder="Password" name="password" type="password" value={this.state.password} onChange={(e) => this.onChange(e)}></Input>
+          </Form>
+          <Form>
+            <Input placeholder="Password Confirmation" name="passwordConfirmation" type="password" value={this.state.passwordConfirmation || ""} onChange={(e) => this.onChange(e)}></Input>
+          </Form>
+          <Form>
+            <Input placeholder="First Name" name="firstName" type="text" value={this.state.firstName || ""} onChange={(e) => this.onChange(e)}></Input>
+          </Form>
+          <Form>
+            <Input placeholder="Last Name" name="lastName" type="text" value={this.state.lastName || ""} onChange={(e) => this.onChange(e)}></Input>
+          </Form>
+          <Form>
+            <Input placeholder="Address" name="address" type="text" value={this.state.address || ""} onChange={(e) => this.onChange(e)}></Input>
+          </Form>
+          <Form>
+            <Button color='red' onClick={this.submitEdit}>Submit</Button>
+          </Form>
+          {profileDoctors}
+        </Container >
       </div>
     )
   }

@@ -8,12 +8,9 @@ import {
 import { Button, Image } from 'semantic-ui-react'
 import DoctorShow from './components/DoctorShow'
 import Doctors from './containers/Doctors'
-import Video from './components/Video'
 import Login from './components/Login'
 import Profile from './components/Profile'
 import Search from './components/Search'
-
-
 import './App.css';
 
 class App extends React.Component {
@@ -36,6 +33,7 @@ class App extends React.Component {
     lat: 0,
     lng: 0,
     doctors: [],
+
     apiDoctors: [],
   }
 
@@ -46,7 +44,7 @@ class App extends React.Component {
         favorite: 1
       })
     }
-  
+
   }
 
   rate = (e, data) => {
@@ -56,13 +54,16 @@ class App extends React.Component {
   createDoctor = (doctor) => {
 
     let doctorObj = {
-      api_id: doctor.uid,
-      first_name: doctor.profile.first_name,
-      last_name: doctor.profile.last_name,
-      title: doctor.profile.title,
-      gender: doctor.profile.gender,
-      bio: doctor.profile.bio,
-      phone_number: doctor.practices[0].phones[0].number
+      api_id: doctor.id,
+      first_name: doctor.firstName,
+      last_name: doctor.lastName,
+      address: doctor.address,
+      image: doctor.image,
+      specialty: doctor.specialty,
+      title: doctor.title,
+      gender: doctor.gender,
+      bio: doctor.bio,
+      phone_number: doctor.phone
     }
 
     fetch(`http://localhost:3000/doctors`, {
@@ -73,20 +74,19 @@ class App extends React.Component {
       },
       body: JSON.stringify(doctorObj)
     }).then(resp => resp.json())
-      .then(data => 
-        {
+      .then(data => {
         let doctors = [...this.state.doctors]
-        // this.setState({
-        //   ...this.state,
-        //   doctors: [data, ...doctors]
-        // })
+        this.setState({
+          ...this.state,
+          doctors: [data, ...doctors]
+        }, () => this.props.history.push('/doctors'))
       })
   }
 
   heart = (doctor) => {
-    // debugger
+
     console.log("this is doctor: ", doctor)
-    let favorite = this.state.currentUser.favorites.find(favorite => favorite.api_id === doctor.uid)
+    let favorite = this.state.currentUser.favorites.find(favorite => favorite.api_id == doctor.api_id)
 
     console.log("in the heart, before if", favorite)
     if (typeof favorite === "object") {
@@ -111,10 +111,13 @@ class App extends React.Component {
         favorite: 0,
         currentUser: {
           ...this.state.currentUser,
-          favorites,
-          doctors
+          favorites: favorites,
+          doctors: doctors
         }
-      }, () => console.log("currentUser state after delete: ", this.state.currentUser))
+      }, () => {
+        console.log("currentUser state after delete: ", this.state.currentUser)
+        console.log("this.state.doctors after delete: ", this.state.doctors)
+      })
     })
   }
 
@@ -123,8 +126,8 @@ class App extends React.Component {
 
     let favoriteObject = {
       user_id: this.state.currentUser.id,
-      doctor_id: this.state.doctors[0].id,
-      api_id: doctor.uid
+      doctor_id: doctor.id,
+      api_id: doctor.api_id
     }
 
     fetch(`http://localhost:3000/favorites`, {
@@ -141,27 +144,28 @@ class App extends React.Component {
 
         let newdoc = {
           id: data.doctor_id,
-          api_id: doctor.uid,
-          first_name: doctor.profile.first_name,
-          last_name: doctor.profile.last_name,
-          title: doctor.profile.title,
-          gender: doctor.profile.gender,
-          bio: doctor.profile.bio,
-          phone_number: doctor.practices[0].phones[0].number}
+          api_id: doctor.api_id,
+          first_name: doctor.first_name,
+          last_name: doctor.last_name,
+          title: doctor.title,
+          gender: doctor.gender,
+          bio: doctor.bio,
+          phone_number: doctor.phone_number
+        }
 
         // userDoctors.filter
         this.setState({
-            ...this.state,
-            favorite: 1,
-            currentUser: {
-              ...this.state.currentUser,
-              favorites: [data, ...favorites],
-              doctors: [newdoc, ...doctors]
+          ...this.state,
+          favorite: 1,
+          currentUser: {
+            ...this.state.currentUser,
+            favorites: [data, ...favorites],
+            doctors: [newdoc, ...doctors]
 
-            }
-          }, () => console.log("currentUser.favorites state after adding favorites:", this.state.currentUser))
+          }
+        }, () => console.log("currentUser.favorites state after adding favorites:", this.state.currentUser))
 
-        }, () => console.log("currentUser.userFavorites after favorites post", this.state.currentUser))
+      }, () => console.log("currentUser.userFavorites after favorites post", this.state.currentUser))
 
   }
 
@@ -215,13 +219,22 @@ class App extends React.Component {
       .then(resp => resp.json())
       .then(data => {
         this.setState({
-          profileDoctors: data.doctors
-        }, () => this.props.history.push('/profile'))
+          ...this.state,
+          currentUser: {
+            ...this.state.currentUser,
+            doctors: data.doctors
+          }
+
+        }, () => {
+          console.log("after profile button is clicked: ", this.state.currentUser.doctors)
+          this.props.history.push('/profile')
+        })
       })
   }
 
   logOut = () => {
-    this.setState({ isLoggedIn: false, currentUser: {} }, () => this.props.history.push('/'))
+    this.props.history.push('/')
+    this.setState({ isLoggedIn: false, currentUser: {}, doctors: [] })
   }
 
   onSignUp = () => {
@@ -229,7 +242,7 @@ class App extends React.Component {
   }
   // request to Google GeoCode API to turn string into Longitude/Latitude
   toGeoCode = (formData) => {
-    this.props.history.push('/doctors')
+
 
     fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=${process.env.REACT_APP_GOOGLE_GEOCODE_API_KEY}`)
       .then(resp => resp.json())
@@ -292,33 +305,24 @@ class App extends React.Component {
           doctorHash.image = 'https://semantic-ui.com/images/avatar2/large/elyse.png'
         }
         doctorHash.title = element.profile.title
+        doctorHash.bio = element.profile.bio
+        doctorHash.address = element.practices[0].address
         doctorHash.gender = element.profile.gender
         doctorHash.phone = element.practices[0].phones[0].number
 
         doctorHash.specialty = element.specialties[0].name
         doctors.push(doctorHash)
+        this.createDoctor(doctorHash)
       }
       catch (err) {
         console.log(err.message)
       }
     })
 
-    this.setState({
-      doctors
-    })
+
   }
 
-  // postDoctors = (doctors) => {
-  //   fetch(`http://localhost:3000/doctors`, {
-  //     method: "POST",
-  //     headers: {
-  //       "content-type": "application/json",
-  //       "accepts": "application/json"
-  //     },
-  //     body: JSON.stringify({ doctors })
-  //   }).then(resp => resp.json()).then(data => console.log(data))
 
-  // }
 
   patchUser = (userData) => {
 
@@ -342,6 +346,8 @@ class App extends React.Component {
         this.setState({
           ...this.state,
           currentUser: {
+            doctors: data.doctors,
+            favorites: data.favorites,
             id: data.id,
             email: data.email,
             address: data.address,
@@ -353,7 +359,20 @@ class App extends React.Component {
         }, () => console.log(this.state.currentUser)))
   }
 
+  componentDidMount() {
+    let doctorsInCurrentState = [...this.state.doctors]
+    // fetch(`http://localhost:3000/doctors`)
+    //   .then(resp => resp.json())
+    //   .then(doctorsInDatabase => {
+    //     console.log("in component did mount doctorsInDatabase", doctorsInDatabase)
+    //     this.setState({
+    //       doctors: doctorsInDatabase
+    //     }, () => console.log("this.state.doctors after mount: ", this.state.doctors))
+    //   })
+  }
+
   render() {
+    console.log("this.state.doctors in App Render: ", this.state.doctors)
 
     return (
       <div>
@@ -364,15 +383,13 @@ class App extends React.Component {
 
 
 
-        {/* <NavBar logOut={this.logOut} currentUser={this.state.currentUser} logUserIn={this.logUserIn} currentCart={this.state.currentCart} /> */}
         <Image alt="" src=""></Image>
         {!this.state.isLoggedIn && <Login isLoggedIn={this.state.isLoggedIn} onSignUp={this.onSignUp} onSubmit={this.onSubmit} register={this.state.register} />}
         <Switch>
-          <Route exact path='/doctors' render={routerProps => <Doctors createDoctor={this.createDoctor} apiDoctors={this.state.apiDoctors} {...routerProps} doctors={this.state.doctors} />} />
-          <Route exact path='/search' render={routerProps => <Search currentUser={this.state.currentUser} {...routerProps} toGeoCode={this.toGeoCode} apiDoctors={this.state.apiDoctors} favorite={this.favorite} />} />
-          <Route exact path='/doctors/:id' render={routerProps => <DoctorShow rate={this.rate} favorite={this.state.favorite} isFavorite={this.isFavorite} heart={this.heart} currentUser={this.state.currentUser} {...routerProps} apiDoctors={this.state.apiDoctors} favorite={this.favorite} />} />
-          <Route exact path='/video' render={routerProps => <Video  {...routerProps} apiDoctors={this.state.apiDoctors} />} />
-          <Route exact path='/profile' render={routerProps => <Profile patchUser={this.patchUser} currentUser={this.state.currentUser} apiDoctors={this.state.apiDoctors} profileDoctors={this.state.profileDoctors} isLoggedIn={this.state.isLoggedIn} {...routerProps} />} />
+          <Route exact path='/doctors' render={routerProps => <Doctors createDoctor={this.createDoctor}  {...routerProps} doctors={this.state.doctors} />} />
+          <Route exact path='/search' render={routerProps => <Search currentUser={this.state.currentUser} {...routerProps} toGeoCode={this.toGeoCode} favorite={this.favorite} />} />
+          <Route exact path='/doctors/:id' render={routerProps => <DoctorShow rate={this.rate} doctors={this.state.doctors} favorite={this.state.favorite} isFavorite={this.isFavorite} heart={this.heart} currentUser={this.state.currentUser} {...routerProps} favorite={this.favorite} />} />
+          <Route exact path='/profile' render={routerProps => <Profile patchUser={this.patchUser} currentUser={this.state.currentUser} doctors={this.state.doctors} isLoggedIn={this.state.isLoggedIn} {...routerProps} />} />
         </Switch>
       </div>
     );
