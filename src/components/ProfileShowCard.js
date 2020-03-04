@@ -47,9 +47,7 @@ class ProfileShowCard extends React.Component {
     })
   }
 
-  favorite = () => {
-    // this.setState({favorite: !this.state.favorite})
-  }
+
 
   componentDidMount() {
     if (Array.isArray(this.props.currentUser.doctors)){

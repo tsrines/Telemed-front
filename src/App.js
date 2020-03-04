@@ -16,6 +16,7 @@ import './App.css';
 class App extends React.Component {
 
   state = {
+    isLoading: false,
     isLoggedIn: false,
     register: false,
     favorite: 0,
@@ -79,8 +80,8 @@ class App extends React.Component {
         this.setState({
           ...this.state,
           doctors: [data, ...doctors]
-        }, () => this.props.history.push('/doctors'))
-      })
+        }, () => {this.props.history.push('/doctors')})
+      }, this.setState({isLoading: false}))
   }
 
   heart = (doctor) => {
@@ -106,9 +107,12 @@ class App extends React.Component {
     }).then(resp => resp.json()).then(data => {
       let favorites = this.state.currentUser.favorites.filter(favorite => favorite.id !== data.id)
       let doctors = this.state.currentUser.doctors.filter(doctor => doctor.api_id !== data.api_id)
+      // this.props.history.push('/profile')
+      
       this.setState({
         ...this.state,
         favorite: 0,
+        // doctors: [data, ...this.state.doctors],
         currentUser: {
           ...this.state.currentUser,
           favorites: favorites,
@@ -163,9 +167,9 @@ class App extends React.Component {
             doctors: [newdoc, ...doctors]
 
           }
-        }, () => console.log("currentUser.favorites state after adding favorites:", this.state.currentUser))
+        }, () => console.log("this.state.currentUser", this.state.currentUser))
 
-      }, () => console.log("currentUser.userFavorites after favorites post", this.state.currentUser))
+      })
 
   }
 
@@ -318,10 +322,11 @@ class App extends React.Component {
         console.log(err.message)
       }
     })
-
-
   }
 
+  loadingHandler = () => {
+    this.setState({isLoading: true})
+  }
 
 
   patchUser = (userData) => {
@@ -360,7 +365,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    let doctorsInCurrentState = [...this.state.doctors]
+    // let doctorsInCurrentState = [...this.state.doctors]
     // fetch(`http://localhost:3000/doctors`)
     //   .then(resp => resp.json())
     //   .then(doctorsInDatabase => {
@@ -377,17 +382,13 @@ class App extends React.Component {
     return (
       <div>
         <Button color="red" as={Link} to="/search">Search</Button>
-        {/* {!this.state.isLoggedIn && <Button color="red" as={Link} to="/login">Sign Up / Login</Button>} */}
         {this.state.isLoggedIn && <Button color="red" onClick={() => this.userProfile()}>Profile</Button>}
         {this.state.isLoggedIn && <Button color="red" onClick={this.logOut}>Logout</Button>}
-
-
-
         <Image alt="" src=""></Image>
         {!this.state.isLoggedIn && <Login isLoggedIn={this.state.isLoggedIn} onSignUp={this.onSignUp} onSubmit={this.onSubmit} register={this.state.register} />}
         <Switch>
           <Route exact path='/doctors' render={routerProps => <Doctors createDoctor={this.createDoctor}  {...routerProps} doctors={this.state.doctors} />} />
-          <Route exact path='/search' render={routerProps => <Search currentUser={this.state.currentUser} {...routerProps} toGeoCode={this.toGeoCode} favorite={this.favorite} />} />
+          <Route exact path='/search' render={routerProps => <Search isLoading={this.state.isLoading} currentUser={this.state.currentUser} loadingHandler={this.loadingHandler} {...routerProps} toGeoCode={this.toGeoCode} favorite={this.favorite} />} />
           <Route exact path='/doctors/:id' render={routerProps => <DoctorShow rate={this.rate} doctors={this.state.doctors} favorite={this.state.favorite} isFavorite={this.isFavorite} heart={this.heart} currentUser={this.state.currentUser} {...routerProps} favorite={this.favorite} />} />
           <Route exact path='/profile' render={routerProps => <Profile patchUser={this.patchUser} currentUser={this.state.currentUser} doctors={this.state.doctors} isLoggedIn={this.state.isLoggedIn} {...routerProps} />} />
         </Switch>

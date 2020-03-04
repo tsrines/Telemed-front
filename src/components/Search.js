@@ -20,6 +20,7 @@ class Search extends React.Component {
     const formData = this.state
     e.preventDefault()
     this.props.toGeoCode(formData)
+    this.props.loadingHandler()
   }
 
 
@@ -37,7 +38,9 @@ class Search extends React.Component {
               <Input required name="address" onChange={(e) => this.onChange(e)} type="text" placeholder="Address" value={this.state.address}></Input>
               <Input required name="ailment" onChange={(e) => this.onChange(e)} type="text" placeholder="What hurts?" value={this.state.ailment}></Input>
               <Input required name="miles" onChange={(e) => this.onChange(e)} type="number" placeholder="Miles?" value={this.state.miles}></Input>
-              <Button color="red" type="submit" value="Get Doctors">Get Doctors</Button>
+
+              {!this.props.isLoading && <Button color="red" type="submit" value="Get Doctors">Get Doctors</Button>}
+              {this.props.isLoading && <Button loading color="red" type="submit" value="Get Doctors">Get Doctors</Button>}
             </Form>
           </Grid.Column >
         </Grid>

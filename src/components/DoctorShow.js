@@ -26,7 +26,7 @@ class DoctorShow extends React.Component {
         favorite: 1
       })
     }
-    debugger
+    // debugger
   }
   // let apiDoc = this.props.apiDoctors.find(doctor => doctor.uid === this.props.match.params.id)
   // if (Array.isArray(this.props.currentUser.userDoctors) && this.props.currentUser.userDoctors.length > 0) {
@@ -84,18 +84,25 @@ class DoctorShow extends React.Component {
     console.log("doc after currentUser find:", doc)
     if (doc == undefined) {
       doc = this.props.doctors.find(doctor => doctor.id == this.props.match.params.id)
-    }
+      console.log("doc after doctor find:", doc)
+    } 
+    // if (doc === undefined){
+      // console.log("before push", doc)
+
+      // this.props.history.push('/profile')
+      // debugger
+    // }
 
   
 
 
-    console.log("this.props.doctors ", this.props.doctors)
-    console.log("this.props.match ", this.props.match)
-    console.log("this.props.match.params.id: ", this.props.match.params.id)
-    console.log("doc: ", doc)
-    console.log("props from DoctorShow", this.props)
-    console.log("this.props.currentUser", this.props.currentUser)
-    debugger
+    // console.log("this.props.doctors ", this.props.doctors)
+    // console.log("this.props.match ", this.props.match)
+    // console.log("this.props.match.params.id: ", this.props.match.params.id)
+    // console.log("doc: ", doc)
+
+    // console.log("this.props.currentUser", this.props.currentUser)
+    // debugger
 
 
 
@@ -105,7 +112,7 @@ class DoctorShow extends React.Component {
 
       <div>
         <Grid columns={2} textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
-          <Grid.Row style={{ maxWidth: 450 }}>
+          <Grid.Row style={{ maxWidth: 750 }}>
             <Grid.Column>
               <Segment >
                 <Header>{doc.first_name ? doc.first_name : doc.firstName} {doc.last_name ? doc.last_name : doc.lastName} {doc.title}</Header>

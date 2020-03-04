@@ -24,6 +24,18 @@ class LoginForm extends React.Component {
       passwordConfirmation: ""
     })
   }
+
+
+  sendEmail = (e) => {
+    e.preventDefault();
+
+    // emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', e.target, 'YOUR_USER_ID')
+  //     .then((result) => {
+  //         console.log(result.text);
+  //     }, (error) => {
+  //         console.log(error.text);
+  //     });
+  }
   render() {
     return (
       <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
@@ -32,6 +44,7 @@ class LoginForm extends React.Component {
             <Image src='../favicon.ico' />
             Telemed 
           </Header>
+
           <Form size='large'>
             <Segment stacked>
               <Form.Input

@@ -17,7 +17,7 @@ class DoctorCard extends React.Component {
   }
 
   render() {
-    console.log("this.props", this.props)
+
 
     let capitalGender
     // console.log(this.props)
