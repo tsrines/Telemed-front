@@ -31,28 +31,18 @@ class Doctors extends React.Component {
   }
 
   render() {
-
-
-    let displayDoctors = this.props.doctors.map(doctor => <DoctorCard createDoctor={this.props.createDoctor} apiDoctors={this.props.apiDoctors} key={doctor.id} {...doctor} />)
+    let displayDoctors = this.props.doctors.map(doctor => <DoctorCard createDoctor={this.props.createDoctor} doctors={this.props.doctors} key={doctor.id} {...doctor} />)
     return (
       <div>
         <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
-          {/* <Grid.Column style={{ maxWidth: 900 }}> */}
-
-       
-
-          {/* </Grid.Column> */}
           <br></br>
           <br></br>
           <br></br>
-          <Card.Group itemsPerRow={4}>
+          <Card.Group itemsPerRow={6}>
             {displayDoctors}
           </Card.Group>
         </Grid>
-
-
       </div>
-
     )
   }
 }
