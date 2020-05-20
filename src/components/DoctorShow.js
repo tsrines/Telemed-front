@@ -56,7 +56,7 @@ class DoctorShow extends React.Component {
       doc = this.props.doctors.find(doctor => doctor.id == this.props.match.params.id)
       if (!!doc) {
         this.renderDocJsx(doc)
-      } 
+      }
     } else {
       doc = this.props.currentUser.doctors.find(doctor => doctor.id == this.props.match.params.id)
       if (!!doc) {
@@ -85,15 +85,15 @@ class DoctorShow extends React.Component {
     if (doc == undefined) {
       doc = this.props.doctors.find(doctor => doctor.id == this.props.match.params.id)
       console.log("doc after doctor find:", doc)
-    } 
+    }
     // if (doc === undefined){
-      // console.log("before push", doc)
+    // console.log("before push", doc)
 
-      // this.props.history.push('/profile')
-      // debugger
+    // this.props.history.push('/profile')
+    // debugger
     // }
 
-  
+
 
 
     // console.log("this.props.doctors ", this.props.doctors)
@@ -117,7 +117,7 @@ class DoctorShow extends React.Component {
               <Segment >
                 <Header>{doc.first_name ? doc.first_name : doc.firstName} {doc.last_name ? doc.last_name : doc.lastName} {doc.title}</Header>
                 <Divider />
-                <Message>Phone Number: {doc.phone_number}</Message>
+                <Message>Phone Number: {doc.phone_number}</Message>                
                 <Rating onRate={(e, data) => this.rate(e, data, doc)} icon="heart" rating={this.state.favorite} maxRating={1} size="huge" />
               </Segment >
             </Grid.Column>

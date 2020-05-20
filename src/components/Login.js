@@ -1,6 +1,7 @@
 import React from 'react'
-import { Button, Form, Grid, Header, Image, Segment } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Image, Segment, Divider } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
+import emailjs from 'emailjs-com'
 
 
 class LoginForm extends React.Component {
@@ -26,25 +27,16 @@ class LoginForm extends React.Component {
   }
 
 
-  sendEmail = (e) => {
-    e.preventDefault();
-
-    // emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', e.target, 'YOUR_USER_ID')
-  //     .then((result) => {
-  //         console.log(result.text);
-  //     }, (error) => {
-  //         console.log(error.text);
-  //     });
-  }
   render() {
     return (
       <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as='h2' color='red' textAlign='center'>
-            <Image src='../favicon.ico' />
             Telemed 
+            <Image src='../favicon.ico' />
           </Header>
-
+          <br />
+          <br />
           <Form size='large'>
             <Segment stacked>
               <Form.Input

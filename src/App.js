@@ -34,12 +34,13 @@ class App extends React.Component {
     lat: 0,
     lng: 0,
     doctors: [],
-
+    error: false,
     apiDoctors: [],
+    users: []
   }
 
   isFavorite = () => {
-    let favoriteArray = this.state.currentUser.doctors.filter(doctor => doctor.api_id === this.props.match.params.id)
+    let favoriteArray = this.state.currentUser.doctors.filter(doctor => doctor.api_id == this.props.match.params.id)
     if (favoriteArray.length > 0) {
       this.setState({
         favorite: 1
@@ -67,7 +68,7 @@ class App extends React.Component {
       phone_number: doctor.phone
     }
 
-    fetch(`http://localhost:3000/doctors`, {
+    fetch(`${process.env.URL}/doctors`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -76,12 +77,13 @@ class App extends React.Component {
       body: JSON.stringify(doctorObj)
     }).then(resp => resp.json())
       .then(data => {
+
         let doctors = [...this.state.doctors]
         this.setState({
           ...this.state,
           doctors: [data, ...doctors]
-        }, () => {this.props.history.push('/doctors')})
-      }, this.setState({isLoading: false}))
+        }, () => { this.props.history.push('/doctors') })
+      }, this.setState({ isLoading: false }))
   }
 
   heart = (doctor) => {
@@ -90,7 +92,7 @@ class App extends React.Component {
     let favorite = this.state.currentUser.favorites.find(favorite => favorite.api_id == doctor.api_id)
 
     console.log("in the heart, before if", favorite)
-    if (typeof favorite === "object") {
+    if (typeof favorite == "object") {
       console.log("in the if, before unHeart is called", favorite)
       this.unHeart(favorite)
     } else {
@@ -100,27 +102,23 @@ class App extends React.Component {
   }
 
   unHeart = (favorite) => {
+    // debugger
     console.log("got here in the unheart", favorite)
     // let favorite = this.state.currentUser.userFavorites.find(favorite => favorite.api_id === doctor.uid)
-    fetch(`http://localhost:3000/favorites/${favorite.id}`, {
+    fetch(`${process.env.URL}/favorites/${favorite.id}`, {
       method: "DELETE",
     }).then(resp => resp.json()).then(data => {
       let favorites = this.state.currentUser.favorites.filter(favorite => favorite.id !== data.id)
       let doctors = this.state.currentUser.doctors.filter(doctor => doctor.api_id !== data.api_id)
-      // this.props.history.push('/profile')
-      
       this.setState({
         ...this.state,
         favorite: 0,
-        // doctors: [data, ...this.state.doctors],
+        doctors: [data.doctor, ...this.state.doctors],
         currentUser: {
           ...this.state.currentUser,
           favorites: favorites,
           doctors: doctors
         }
-      }, () => {
-        console.log("currentUser state after delete: ", this.state.currentUser)
-        console.log("this.state.doctors after delete: ", this.state.doctors)
       })
     })
   }
@@ -134,7 +132,7 @@ class App extends React.Component {
       api_id: doctor.api_id
     }
 
-    fetch(`http://localhost:3000/favorites`, {
+    fetch(`${process.env.URL}/favorites`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -179,7 +177,7 @@ class App extends React.Component {
   }
 
   logInOrSignUp = (formData) => {
-    fetch(`http://localhost:3000/users`, {
+    fetch(`${process.env.URL}/users`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -219,7 +217,7 @@ class App extends React.Component {
 
 
     let id = this.state.currentUser.id
-    fetch(`http://localhost:3000/users/${id}`)
+    fetch(`${process.env.URL}/users/${id}`)
       .then(resp => resp.json())
       .then(data => {
         this.setState({
@@ -253,26 +251,33 @@ class App extends React.Component {
       .then(data => this.setState({
         lat: data["results"][0].geometry.location.lat,
         lng: data["results"][0].geometry.location.lng
-      }, () => this.getDoctors(formData)))
+      }, () => this.getDoctors(formData))).catch(error => console.log(error))
 
   }
 
   // request to BetterDoc API with Long/Lat
+  isResolved = () => {
+    if (this.state.apiDoctors.length < 1) {
+      this.setState({ error: true })
+    } else {
+      this.setState({ error: false })
+    }
+  }
 
   getDoctors = (formData) => {
 
     fetch(`https://api.betterdoctor.com/2016-03-01/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=${process.env.REACT_APP_BETTER_DOC_API_KEY}`)
       .then(resp => resp.json())
       .then(data => {
+        console.log("data from betterdoc", data)
         this.setState({
-          apiDoctors: data.data
-        })
+          apiDoctors: data.data,
+          isLoading: false
+        }, () => this.isResolved())
         this.parseDoctors(data.data)
       }).catch((error) => {
         console.log(error)
       })
-
-
   }
 
   imageApi = (firstName, lastName, title) => {
@@ -325,13 +330,13 @@ class App extends React.Component {
   }
 
   loadingHandler = () => {
-    this.setState({isLoading: true})
+    this.setState({ isLoading: true })
   }
 
 
   patchUser = (userData) => {
 
-    fetch(`http://localhost:3000/users/${this.state.currentUser.id}`, {
+    fetch(`${process.env.URL}/users/${this.state.currentUser.id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -366,29 +371,35 @@ class App extends React.Component {
 
   componentDidMount() {
     // let doctorsInCurrentState = [...this.state.doctors]
-    // fetch(`http://localhost:3000/doctors`)
-    //   .then(resp => resp.json())
-    //   .then(doctorsInDatabase => {
-    //     console.log("in component did mount doctorsInDatabase", doctorsInDatabase)
-    //     this.setState({
-    //       doctors: doctorsInDatabase
-    //     }, () => console.log("this.state.doctors after mount: ", this.state.doctors))
-    //   })
+    fetch(`${process.env.URL}/users`)
+      .then(resp => resp.json())
+      .then(users => {
+        console.log("in component did mount users", users)
+        this.setState({
+          users
+        }, () => console.log("this.state.users after mount: ", this.state.users))
+      })
+  }
+
+  searchButton = () => {
+    if (this.state.isLoggedIn) {
+      this.props.history.push('/search')
+    } else {
+      alert('Please log in before searching')
+    }
   }
 
   render() {
-    console.log("this.state.doctors in App Render: ", this.state.doctors)
-
     return (
       <div>
-        <Button color="red" as={Link} to="/search">Search</Button>
+        <Button color="red" onClick={() => this.searchButton()} >Search</Button>
         {this.state.isLoggedIn && <Button color="red" onClick={() => this.userProfile()}>Profile</Button>}
         {this.state.isLoggedIn && <Button color="red" onClick={this.logOut}>Logout</Button>}
         <Image alt="" src=""></Image>
         {!this.state.isLoggedIn && <Login isLoggedIn={this.state.isLoggedIn} onSignUp={this.onSignUp} onSubmit={this.onSubmit} register={this.state.register} />}
         <Switch>
           <Route exact path='/doctors' render={routerProps => <Doctors createDoctor={this.createDoctor}  {...routerProps} doctors={this.state.doctors} />} />
-          <Route exact path='/search' render={routerProps => <Search isLoading={this.state.isLoading} currentUser={this.state.currentUser} loadingHandler={this.loadingHandler} {...routerProps} toGeoCode={this.toGeoCode} favorite={this.favorite} />} />
+          <Route exact path='/search' render={routerProps => <Search error={this.state.error} isLoading={this.state.isLoading} currentUser={this.state.currentUser} loadingHandler={this.loadingHandler} {...routerProps} toGeoCode={this.toGeoCode} favorite={this.favorite} />} />
           <Route exact path='/doctors/:id' render={routerProps => <DoctorShow rate={this.rate} doctors={this.state.doctors} favorite={this.state.favorite} isFavorite={this.isFavorite} heart={this.heart} currentUser={this.state.currentUser} {...routerProps} favorite={this.favorite} />} />
           <Route exact path='/profile' render={routerProps => <Profile patchUser={this.patchUser} currentUser={this.state.currentUser} doctors={this.state.doctors} isLoggedIn={this.state.isLoggedIn} {...routerProps} />} />
         </Switch>

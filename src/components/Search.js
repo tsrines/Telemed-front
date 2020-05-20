@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Header, Input, Image, Button, Grid } from 'semantic-ui-react'
+import { Form, Header, Input, Image, Button, Grid, Segment } from 'semantic-ui-react'
 
 class Search extends React.Component {
 
@@ -34,6 +34,7 @@ class Search extends React.Component {
               <Image src='../favicon.ico' />
               Telemed
             </Header>
+            {this.props.error && <Segment>No search results found</Segment>}
             <Form onSubmit={this.onSubmit}>
               <Input required name="address" onChange={(e) => this.onChange(e)} type="text" placeholder="Address" value={this.state.address}></Input>
               <Input required name="ailment" onChange={(e) => this.onChange(e)} type="text" placeholder="What hurts?" value={this.state.ailment}></Input>
