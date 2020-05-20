@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Header, Input, Image, Button, Grid } from 'semantic-ui-react'
+import { Form, Header, Input, Image, Button, Grid, Segment } from 'semantic-ui-react'
 
 class Search extends React.Component {
 
@@ -20,6 +20,7 @@ class Search extends React.Component {
     const formData = this.state
     e.preventDefault()
     this.props.toGeoCode(formData)
+    this.props.loadingHandler()
   }
 
 
@@ -33,11 +34,14 @@ class Search extends React.Component {
               <Image src='../favicon.ico' />
               Telemed
             </Header>
+            {this.props.error && <Segment>No search results found</Segment>}
             <Form onSubmit={this.onSubmit}>
               <Input required name="address" onChange={(e) => this.onChange(e)} type="text" placeholder="Address" value={this.state.address}></Input>
               <Input required name="ailment" onChange={(e) => this.onChange(e)} type="text" placeholder="What hurts?" value={this.state.ailment}></Input>
               <Input required name="miles" onChange={(e) => this.onChange(e)} type="number" placeholder="Miles?" value={this.state.miles}></Input>
-              <Button color="red" type="submit" value="Get Doctors">Get Doctors</Button>
+
+              {!this.props.isLoading && <Button color="red" type="submit" value="Get Doctors">Get Doctors</Button>}
+              {this.props.isLoading && <Button loading color="red" type="submit" value="Get Doctors">Get Doctors</Button>}
             </Form>
           </Grid.Column >
         </Grid>

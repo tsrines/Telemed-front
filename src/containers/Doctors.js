@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  Input,
-  Form,
-  Card,
-  Button,
-  Grid
-} from 'semantic-ui-react'
+import { Card, Grid } from 'semantic-ui-react'
 import DoctorCard from '../components/DoctorCard'
 import { withRouter } from 'react-router-dom'
 
@@ -36,9 +30,7 @@ class Doctors extends React.Component {
       <div>
         <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
           <br></br>
-          <br></br>
-          <br></br>
-          <Card.Group itemsPerRow={6}>
+          <Card.Group style={{ overflow: 'auto', maxHeight: '65em' }} display='flex' justify-content='center' itemsPerRow={6}>
             {displayDoctors}
           </Card.Group>
         </Grid>
