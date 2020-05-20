@@ -13,7 +13,7 @@ import Profile from './components/Profile'
 import Search from './components/Search'
 import './App.css';
 
-import { URL, REACT_APP_GOOGLE_GEOCODE_API_KEY, REACT_APP_BETTER_DOC_API_KEY } from './netlify.toml'
+
 
 class App extends React.Component {
 
@@ -70,7 +70,7 @@ class App extends React.Component {
       phone_number: doctor.phone
     }
 
-    fetch(URL + `/doctors`, {
+    fetch(process.env.URL + `/doctors`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -107,7 +107,7 @@ class App extends React.Component {
     // debugger
     console.log("got here in the unheart", favorite)
     // let favorite = this.state.currentUser.userFavorites.find(favorite => favorite.api_id === doctor.uid)
-    fetch(URL + `/favorites/${favorite.id}`, {
+    fetch(process.env.URL + `/favorites/${favorite.id}`, {
       method: "DELETE",
     }).then(resp => resp.json()).then(data => {
       let favorites = this.state.currentUser.favorites.filter(favorite => favorite.id !== data.id)
@@ -134,7 +134,7 @@ class App extends React.Component {
       api_id: doctor.api_id
     }
 
-    fetch(URL + `/favorites`, {
+    fetch(process.env.URL + `/favorites`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -181,7 +181,7 @@ class App extends React.Component {
   logInOrSignUp = (formData) => {
     // console.log(URL)
     // debugger
-    fetch(URL + "/users", {
+    fetch(process.env.URL + "/users", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -221,7 +221,7 @@ class App extends React.Component {
 
 
     let id = this.state.currentUser.id
-    fetch(URL + `/users/${id}`)
+    fetch(process.env.URL + `/users/${id}`)
       .then(resp => resp.json())
       .then(data => {
         this.setState({
@@ -250,7 +250,7 @@ class App extends React.Component {
   toGeoCode = (formData) => {
 
 
-    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=` + REACT_APP_GOOGLE_GEOCODE_API_KEY)
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=` + process.env.REACT_APP_GOOGLE_GEOCODE_API_KEY)
       .then(resp => resp.json())
       .then(data => this.setState({
         lat: data["results"][0].geometry.location.lat,
@@ -270,7 +270,7 @@ class App extends React.Component {
 
   getDoctors = (formData) => {
 
-    fetch(`https://api.betterdoctor.com/2016-03-01/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=` + REACT_APP_BETTER_DOC_API_KEY)
+    fetch(`https://api.betterdoctor.com/2016-03-01/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=` + process.env.REACT_APP_BETTER_DOC_API_KEY)
       .then(resp => resp.json())
       .then(data => {
         console.log("data from betterdoc", data)
@@ -340,7 +340,7 @@ class App extends React.Component {
 
   patchUser = (userData) => {
 
-    fetch(URL + `/users/${this.state.currentUser.id}`, {
+    fetch(process.env.URL + `/users/${this.state.currentUser.id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -375,7 +375,7 @@ class App extends React.Component {
 
   componentDidMount() {
     // let doctorsInCurrentState = [...this.state.doctors]
-    fetch(URL + `/users`)
+    fetch(process.env.URL + `/users`)
       .then(resp => resp.json())
       .then(users => {
         console.log("in component did mount users", users)
