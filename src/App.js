@@ -13,7 +13,7 @@ import Profile from './components/Profile'
 import Search from './components/Search'
 import './App.css';
 
-import { URL, REACT_APP_GOOGLE_GEOCODE_API_KEY, REACT_APP_BETTER_DOC_API_KEY } from '../netlify.toml'
+import { URL, REACT_APP_GOOGLE_GEOCODE_API_KEY, REACT_APP_BETTER_DOC_API_KEY } from './netlify.toml'
 
 class App extends React.Component {
 
