@@ -10,11 +10,12 @@
 
 # production
 /build
-.keys.js
+# .keys.js
 
 # misc
 .DS_Store
 
+# netlify.toml
 .env
 .env.local
 .env.development.local
