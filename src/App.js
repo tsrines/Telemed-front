@@ -70,7 +70,7 @@ class App extends React.Component {
       phone_number: doctor.phone
     }
 
-    fetch(process.env.URL + `/doctors`, {
+    fetch("https://cryptic-island-45793.herokuapp.com" + `/doctors`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -107,7 +107,7 @@ class App extends React.Component {
     // debugger
     console.log("got here in the unheart", favorite)
     // let favorite = this.state.currentUser.userFavorites.find(favorite => favorite.api_id === doctor.uid)
-    fetch(process.env.URL + `/favorites/${favorite.id}`, {
+    fetch("https://cryptic-island-45793.herokuapp.com" + `/favorites/${favorite.id}`, {
       method: "DELETE",
     }).then(resp => resp.json()).then(data => {
       let favorites = this.state.currentUser.favorites.filter(favorite => favorite.id !== data.id)
@@ -134,7 +134,7 @@ class App extends React.Component {
       api_id: doctor.api_id
     }
 
-    fetch(process.env.URL + `/favorites`, {
+    fetch("https://cryptic-island-45793.herokuapp.com" + `/favorites`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -181,7 +181,7 @@ class App extends React.Component {
   logInOrSignUp = (formData) => {
     // console.log(URL)
     // debugger
-    fetch(process.env.URL + "/users", {
+    fetch("https://cryptic-island-45793.herokuapp.com" + "/users", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -221,7 +221,7 @@ class App extends React.Component {
 
 
     let id = this.state.currentUser.id
-    fetch(process.env.URL + `/users/${id}`)
+    fetch("https://cryptic-island-45793.herokuapp.com" + `/users/${id}`)
       .then(resp => resp.json())
       .then(data => {
         this.setState({
@@ -250,7 +250,7 @@ class App extends React.Component {
   toGeoCode = (formData) => {
 
 
-    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=` + process.env.REACT_APP_GOOGLE_GEOCODE_API_KEY)
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=` + "AIzaSyAkZI07elJzbOUJR5DCnSDGTZuDGmcptBM")
       .then(resp => resp.json())
       .then(data => this.setState({
         lat: data["results"][0].geometry.location.lat,
@@ -270,7 +270,7 @@ class App extends React.Component {
 
   getDoctors = (formData) => {
 
-    fetch(`https://api.betterdoctor.com/2016-03-01/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=` + process.env.REACT_APP_BETTER_DOC_API_KEY)
+    fetch(`https://api.betterdoctor.com/2016-03-01/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=` + "376761dc9a0b6db741da0e97bfad107e")
       .then(resp => resp.json())
       .then(data => {
         console.log("data from betterdoc", data)
@@ -340,7 +340,7 @@ class App extends React.Component {
 
   patchUser = (userData) => {
 
-    fetch(process.env.URL + `/users/${this.state.currentUser.id}`, {
+    fetch("https://cryptic-island-45793.herokuapp.com" + `/users/${this.state.currentUser.id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -375,7 +375,7 @@ class App extends React.Component {
 
   componentDidMount() {
     // let doctorsInCurrentState = [...this.state.doctors]
-    fetch(process.env.URL + `/users`)
+    fetch("https://cryptic-island-45793.herokuapp.com" + `/users`)
       .then(resp => resp.json())
       .then(users => {
         console.log("in component did mount users", users)

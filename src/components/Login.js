@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Form, Grid, Header, Image, Segment, Divider } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
-import emailjs from 'emailjs-com'
+
 
 
 class LoginForm extends React.Component {
