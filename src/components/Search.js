@@ -25,6 +25,7 @@ class Search extends React.Component {
 
 
   render() {
+    console.log(this.props)
     return (
       <div>
 
@@ -34,7 +35,7 @@ class Search extends React.Component {
               <Image src='../favicon.ico' />
               Telemed
             </Header>
-            {this.props.error && <Segment>No search results found</Segment>}
+            {this.props.error && <Segment>No search results found / API is currently down</Segment>}
             <Form onSubmit={this.onSubmit}>
               <Input required name="address" onChange={(e) => this.onChange(e)} type="text" placeholder="Address" value={this.state.address}></Input>
               <Input required name="ailment" onChange={(e) => this.onChange(e)} type="text" placeholder="What hurts?" value={this.state.ailment}></Input>

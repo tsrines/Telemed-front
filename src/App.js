@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Route,
-  Link,
   Switch,
   withRouter,
 } from 'react-router-dom'
@@ -40,6 +39,9 @@ class App extends React.Component {
     apiDoctors: [],
     users: []
   }
+  apiDown = () => {
+
+  }
 
   isFavorite = () => {
     let favoriteArray = this.state.currentUser.doctors.filter(doctor => doctor.api_id == this.props.match.params.id)
@@ -52,7 +54,7 @@ class App extends React.Component {
   }
 
   rate = (e, data) => {
-    console.log(e, data)
+
   }
 
   createDoctor = (doctor) => {
@@ -70,11 +72,11 @@ class App extends React.Component {
       phone_number: doctor.phone
     }
 
-    fetch("https://cryptic-island-45793.herokuapp.com" + `/doctors`, {
+    fetch("https://cryptic-island-45793.herokuapp.com/doctors", {
       method: "POST",
       headers: {
-        "content-type": "application/json",
-        "accepts": "application/json"
+        "Content-type": "application/json",
+        "Accepts": "application/json"
       },
       body: JSON.stringify(doctorObj)
     }).then(resp => resp.json())
@@ -90,24 +92,24 @@ class App extends React.Component {
 
   heart = (doctor) => {
 
-    console.log("this is doctor: ", doctor)
+
     let favorite = this.state.currentUser.favorites.find(favorite => favorite.api_id == doctor.api_id)
 
-    console.log("in the heart, before if", favorite)
+
     if (typeof favorite == "object") {
-      console.log("in the if, before unHeart is called", favorite)
+
       this.unHeart(favorite)
     } else {
-      console.log("in the else, before favorite is called", favorite)
+
       this.favorite(doctor)
     }
   }
 
   unHeart = (favorite) => {
     // debugger
-    console.log("got here in the unheart", favorite)
+
     // let favorite = this.state.currentUser.userFavorites.find(favorite => favorite.api_id === doctor.uid)
-    fetch("https://cryptic-island-45793.herokuapp.com" + `/favorites/${favorite.id}`, {
+    fetch(`https://cryptic-island-45793.herokuapp.com/favorites/${favorite.id}`, {
       method: "DELETE",
     }).then(resp => resp.json()).then(data => {
       let favorites = this.state.currentUser.favorites.filter(favorite => favorite.id !== data.id)
@@ -126,15 +128,13 @@ class App extends React.Component {
   }
 
   favorite = (doctor) => {
-    console.log("in the favorite")
-
     let favoriteObject = {
       user_id: this.state.currentUser.id,
       doctor_id: doctor.id,
       api_id: doctor.api_id
     }
 
-    fetch("https://cryptic-island-45793.herokuapp.com" + `/favorites`, {
+    fetch("https://cryptic-island-45793.herokuapp.com/favorites", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -167,7 +167,7 @@ class App extends React.Component {
             doctors: [newdoc, ...doctors]
 
           }
-        }, () => console.log("this.state.currentUser", this.state.currentUser))
+        })
 
       })
 
@@ -179,9 +179,7 @@ class App extends React.Component {
   }
 
   logInOrSignUp = (formData) => {
-    // console.log(URL)
-    // debugger
-    fetch("https://cryptic-island-45793.herokuapp.com" + "/users", {
+    fetch("https://cryptic-island-45793.herokuapp.com/users", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -221,7 +219,7 @@ class App extends React.Component {
 
 
     let id = this.state.currentUser.id
-    fetch("https://cryptic-island-45793.herokuapp.com" + `/users/${id}`)
+    fetch(`https://cryptic-island-45793.herokuapp.com/users/${id}`)
       .then(resp => resp.json())
       .then(data => {
         this.setState({
@@ -232,7 +230,7 @@ class App extends React.Component {
           }
 
         }, () => {
-          console.log("after profile button is clicked: ", this.state.currentUser.doctors)
+
           this.props.history.push('/profile')
         })
       })
@@ -250,7 +248,7 @@ class App extends React.Component {
   toGeoCode = (formData) => {
 
 
-    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=` + "AIzaSyAkZI07elJzbOUJR5DCnSDGTZuDGmcptBM")
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=AIzaSyAkZI07elJzbOUJR5DCnSDGTZuDGmcptBM`)
       .then(resp => resp.json())
       .then(data => this.setState({
         lat: data["results"][0].geometry.location.lat,
@@ -270,33 +268,19 @@ class App extends React.Component {
 
   getDoctors = (formData) => {
 
-    fetch(`https://api.betterdoctor.com/2016-03-01/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=` + "376761dc9a0b6db741da0e97bfad107e")
+    fetch(`https://api.betterdoctor.com/2015-01-27/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=456c38f1b8349922db25eb4a4fd44429`)
       .then(resp => resp.json())
       .then(data => {
-        console.log("data from betterdoc", data)
         this.setState({
           apiDoctors: data.data,
           isLoading: false
         }, () => this.isResolved())
         this.parseDoctors(data.data)
-      }).catch((error) => {
-        console.log(error)
+      }).catch((err) => {
+        if(err) this.setState({error: true, isLoading: false})
       })
   }
 
-  // imageApi = (firstName, lastName, title) => {
-
-  //   fetch(`https://serpapi.com/search?q=${firstName}%20${lastName},%20${title}&tbm=isch&ijn=0&api_key=${REACT_APP_SERP_API_KEY}`)
-  //     .then(resp => { resp.json() })
-  //     .then(data => {
-
-  //       return data.images_results[0].original
-  //     })
-  //     .catch(err => {
-
-  //       console.error(err)
-  //     })
-  // }
 
   parseDoctors = (doctorsArray) => {
 
@@ -328,7 +312,7 @@ class App extends React.Component {
         this.createDoctor(doctorHash)
       }
       catch (err) {
-        console.log(err.message)
+        console.log(err)
       }
     })
   }
@@ -370,7 +354,7 @@ class App extends React.Component {
             firstName: data.first_name,
             lastName: data.last_name
           }
-        }, () => console.log(this.state.currentUser)))
+        }))
   }
 
   componentDidMount() {
@@ -378,10 +362,9 @@ class App extends React.Component {
     fetch("https://cryptic-island-45793.herokuapp.com" + `/users`)
       .then(resp => resp.json())
       .then(users => {
-        console.log("in component did mount users", users)
         this.setState({
           users
-        }, () => console.log("this.state.users after mount: ", this.state.users))
+        })
       })
   }
 
