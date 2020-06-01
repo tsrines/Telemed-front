@@ -39,9 +39,6 @@ class App extends React.Component {
     apiDoctors: [],
     users: []
   }
-  apiDown = () => {
-
-  }
 
   isFavorite = () => {
     let favoriteArray = this.state.currentUser.doctors.filter(doctor => doctor.api_id == this.props.match.params.id)
