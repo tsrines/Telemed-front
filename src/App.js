@@ -41,6 +41,7 @@ class App extends React.Component {
   }
 
   isFavorite = () => {
+    // eslint-disable-next-line
     let favoriteArray = this.state.currentUser.doctors.filter(doctor => doctor.api_id == this.props.match.params.id)
     if (favoriteArray.length > 0) {
       this.setState({
@@ -54,7 +55,7 @@ class App extends React.Component {
 
   }
 
-  createDoctor = (doctor) => {
+  createDoctor = (doctor, isSeed) => {
 
     let doctorObj = {
       api_id: doctor.id,
@@ -68,8 +69,7 @@ class App extends React.Component {
       bio: doctor.bio,
       phone_number: doctor.phone
     }
-
-    fetch("https://cryptic-island-45793.herokuapp.com/doctors", {
+    fetch("https://localhost:3000/doctors", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -92,7 +92,7 @@ class App extends React.Component {
 
     let favorite = this.state.currentUser.favorites.find(favorite => favorite.api_id == doctor.api_id)
 
-
+// eslint-disable-next-line
     if (typeof favorite == "object") {
 
       this.unHeart(favorite)
@@ -106,7 +106,8 @@ class App extends React.Component {
     // debugger
 
     // let favorite = this.state.currentUser.userFavorites.find(favorite => favorite.api_id === doctor.uid)
-    fetch(`https://cryptic-island-45793.herokuapp.com/favorites/${favorite.id}`, {
+    // eslint-disable-next-line
+    fetch(`http://localhost:3000/favorites/${favorite.id}`, {
       method: "DELETE",
     }).then(resp => resp.json()).then(data => {
       let favorites = this.state.currentUser.favorites.filter(favorite => favorite.id !== data.id)
@@ -131,7 +132,7 @@ class App extends React.Component {
       api_id: doctor.api_id
     }
 
-    fetch("https://cryptic-island-45793.herokuapp.com/favorites", {
+    fetch("http://localhost:3000/favorites", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -176,7 +177,7 @@ class App extends React.Component {
   }
 
   logInOrSignUp = (formData) => {
-    fetch("https://cryptic-island-45793.herokuapp.com/users", {
+    fetch("http://localhost:3000/users", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -216,7 +217,7 @@ class App extends React.Component {
 
 
     let id = this.state.currentUser.id
-    fetch(`https://cryptic-island-45793.herokuapp.com/users/${id}`)
+    fetch(`http://localhost:3000/users/${id}`)
       .then(resp => resp.json())
       .then(data => {
         this.setState({
@@ -245,14 +246,15 @@ class App extends React.Component {
   toGeoCode = (formData) => {
 
 
-    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=AIzaSyAkZI07elJzbOUJR5DCnSDGTZuDGmcptBM`)
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=AIzaSyBIydfqNNfDLfDu1eOrdQS-Ze3uP5TFGjY`)
       .then(resp => resp.json())
       .then(data => this.setState({
         lat: data["results"][0].geometry.location.lat,
         lng: data["results"][0].geometry.location.lng
-      }, () => this.getDoctors(formData))).catch(err => console.dir(err))
+      }, () => this.getDoctors(formData))).catch(err => console.log(err))
 
   }
+
 
   // request to BetterDoc API with Long/Lat
   isResolved = () => {
@@ -274,7 +276,7 @@ class App extends React.Component {
         }, () => this.isResolved())
         this.parseDoctors(data.data)
       }).catch((err) => {
-        if(err) this.setState({error: true, isLoading: false})
+        this.getSeeds()
       })
   }
 
@@ -321,7 +323,7 @@ class App extends React.Component {
 
   patchUser = (userData) => {
 
-    fetch("https://cryptic-island-45793.herokuapp.com" + `/users/${this.state.currentUser.id}`, {
+    fetch("http://localhost:3000" + `/users/${this.state.currentUser.id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -356,7 +358,7 @@ class App extends React.Component {
 
   componentDidMount() {
     // let doctorsInCurrentState = [...this.state.doctors]
-    fetch("https://cryptic-island-45793.herokuapp.com" + `/users`)
+    fetch("http://localhost:3000" + `/users`)
       .then(resp => resp.json())
       .then(users => {
         this.setState({
@@ -371,6 +373,12 @@ class App extends React.Component {
     } else {
       alert('Please log in before searching')
     }
+  }
+
+  getSeeds = () => {
+    fetch('http://localhost:3000/seeds').then(res => res.json()).then(doctors => {
+      this.setState({ doctors, isLoading: false }, () => this.props.history.push('/doctors'))
+    })
   }
 
   render() {

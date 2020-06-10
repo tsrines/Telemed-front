@@ -7,7 +7,7 @@ class DoctorShow extends React.Component {
 
   isFavorite = () => {
 
-
+// eslint-disable-next-line
     let favoriteArray = this.props.currentUser.doctors.filter(doctor => doctor.id == this.props.match.params.id)
     if (favoriteArray.length > 0) {
       this.setState({
@@ -30,11 +30,13 @@ class DoctorShow extends React.Component {
   docCheck = () => {
     let doc
     if (this.props.doctors.length > 0) {
+      // eslint-disable-next-line
       doc = this.props.doctors.find(doctor => doctor.id == this.props.match.params.id)
       if (!!doc) {
         this.renderDocJsx(doc)
       }
     } else {
+      // eslint-disable-next-line
       doc = this.props.currentUser.doctors.find(doctor => doctor.id == this.props.match.params.id)
       if (!!doc) {
         this.renderDocJsx(doc)
@@ -57,8 +59,9 @@ class DoctorShow extends React.Component {
 
   render() {
     let doc
+    // eslint-disable-next-line
     doc = this.props.currentUser.doctors.find(doctor => doctor.id == this.props.match.params.id)
-
+// eslint-disable-next-line
     if (doc == undefined) {
       doc = this.props.doctors.find(doctor => doctor.id == this.props.match.params.id)
 
