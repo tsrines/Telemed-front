@@ -240,7 +240,7 @@ class App extends React.Component {
   // request to Google GeoCode API to turn string into Longitude/Latitude
   toGeoCode = (formData) => {
     fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=AIzaSyCuEOeSzUNgNIoiSLtWMZdIUPkl0S3DTDI`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
     )
       .then((resp) => resp.json())
       .then((data) =>
@@ -266,7 +266,7 @@ class App extends React.Component {
 
   getDoctors = (formData) => {
     fetch(
-      `https://api.betterdoctor.com/2015-01-27/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=456c38f1b8349922db25eb4a4fd44429`
+      `https://api.betterdoctor.com/2015-01-27/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=${process.env.REACT_APP_BETTER_DOC}`
     )
       .then((resp) => resp.json())
       .then((data) => {
