@@ -1,56 +1,162 @@
-import React from 'react'
-import { Form, Header, Input, Image, Button, Grid, Segment } from 'semantic-ui-react'
+import React from 'react';
+import {
+  Form,
+  Header,
+  Image,
+  Button,
+  Grid,
+  Segment,
+  Label,
+  Input,
+} from 'semantic-ui-react';
+import axios from 'axios';
 
 class Search extends React.Component {
-
   state = {
-    address: "",
-    ailment: "",
-    miles: "",
-
-  }
+    address: '',
+    query: '',
+    distance: '',
+    browserLocation: false,
+    lat: null,
+    lng: null,
+  };
 
   onChange = (e) => {
     this.setState({
-      [e.target.name]: e.target.value
-    })
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  onSubmit = async (e) => {
+    console.log('this.props from search', this.props);
+    e.preventDefault();
+    this.props.loadingHandler(true);
+    const payload = this.state;
+    const { lat, lng, distance, query, address } = this.state;
+    if (lat === null && lng === null) {
+      try {
+        let res = await axios.get(
+          `http://localhost:3000/geocodes/coords?address=${address}`
+        );
+        payload.lat = res.data.lat;
+        payload.lng = res.data.lng;
+        payload.query = query;
+        await this.props.googleSearch(payload);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      payload.query = query;
+      await this.props.googleSearch(payload);
+    }
+    // this.props.loadingHandler(false);
+  };
+  componentDidMount() {
+    this.setState({
+      ...this.state,
+      browserLocation: false,
+      lat: null,
+      lng: null,
+    });
   }
 
-  onSubmit = (e) => {
-    const formData = this.state
-    e.preventDefault()
-    this.props.toGeoCode(formData)
-    this.props.loadingHandler()
-  }
-
+  toggleUseCurrentPosition = async (e) => {
+    if (!this.state.browserLocation) {
+      this.setState({ ...this.state, browserLocation: true });
+      const geo = navigator.geolocation;
+      if (!geo) {
+        console.log('Geo not supported');
+      } else {
+        geo.getCurrentPosition((position) => {
+          this.setState({
+            ...this.state,
+            lat: position.coords.latitude.toString(),
+            lng: position.coords.longitude.toString(),
+          });
+        });
+      }
+    } else {
+      this.setState({
+        ...this.state,
+        browserLocation: false,
+        lat: null,
+        lng: null,
+      });
+    }
+  };
 
   render() {
-    console.log(this.props)
     return (
       <div>
-
-        <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+        <Grid
+          textAlign='center'
+          style={{ height: '100vh' }}
+          verticalAlign='middle'
+        >
           <Grid.Column style={{ maxWidth: 900 }}>
             <Header as='h2' color='red' textAlign='center'>
               <Image src='../favicon.ico' />
               Telemed
             </Header>
-            {this.props.error && <Segment>No search results found / API is currently down</Segment>}
+            {/* {this.props.loading && <Segment>Loading...</Segment>} */}
+
             <Form onSubmit={this.onSubmit}>
-              <Input required name="address" onChange={(e) => this.onChange(e)} type="text" placeholder="Address" value={this.state.address}></Input>
-              <Input required name="ailment" onChange={(e) => this.onChange(e)} type="text" placeholder="What hurts?" value={this.state.ailment}></Input>
-              <Input required name="miles" onChange={(e) => this.onChange(e)} type="number" placeholder="Miles?" value={this.state.miles}></Input>
+              <>
+                <Label pointing='below'>Use current location</Label>
 
-              {!this.props.isLoading && <Button color="red" type="submit" value="Get Doctors">Get Doctors</Button>}
-              {this.props.isLoading && <Button loading color="red" type="submit" value="Get Doctors">Get Doctors</Button>}
+                <Form.Field>
+                  {/* <Label>Current Location?</Label> */}
+                  <Form.Checkbox
+                    toggle
+                    value={this.state.browserLocation}
+                    onClick={this.toggleUseCurrentPosition}
+                  ></Form.Checkbox>
+                  {!this.state.browserLocation && (
+                    <Input
+                      fluid
+                      name='address'
+                      onChange={(e) => this.onChange(e)}
+                      type='text'
+                      placeholder='Address'
+                      value={this.state.address}
+                    />
+                  )}
+                </Form.Field>
+                <Form.Field>
+                  <Label>What kind of doctor do you need to see?</Label>
+                  <Input
+                    fluid
+                    required
+                    name='query'
+                    onChange={(e) => this.onChange(e)}
+                    type='text'
+                    placeholder='...foot, heart, etc'
+                    value={this.state.query}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Label>How far are you willing to travel?</Label>
+                  <Input
+                    fluid
+                    // label={'Travel Distance'}
+                    required
+                    name='distance'
+                    onChange={(e) => this.onChange(e)}
+                    type='number'
+                    placeholder='...in miles'
+                    value={this.state.distance}
+                  />
+                </Form.Field>
+                <Button loading={this.props.loading} color='red' type='submit'>
+                  Get Doctors
+                </Button>
+              </>
             </Form>
-          </Grid.Column >
+          </Grid.Column>
         </Grid>
-
       </div>
-
-    )
+    );
   }
 }
 
-export default Search 
+export default Search;

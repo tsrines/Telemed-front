@@ -1,474 +1,422 @@
 import React from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import { Button, Image } from 'semantic-ui-react';
-import DoctorShow from './components/DoctorShow';
+import DoctorShow from './components/doctorShow/DoctorShow';
 import Doctors from './containers/Doctors';
-import Login from './components/Login';
-import Profile from './components/Profile';
+import Profile from './components/profile/Profile';
 import Search from './components/Search';
 import './App.css';
+import {
+  fetchApiDoctors,
+  createReviews,
+  createPhotos,
+} from './helpers/helpers';
+import axios from 'axios';
+import Landing from './components/layout/Landing';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+import NavBar from './components/layout/NavBar';
+import { Container } from 'semantic-ui-react';
+import Edit from './components/profile/Edit';
+import SearchIndex from './containers/SearchIndex';
+import ConversationsList from './components/ConversationsList';
 
 class App extends React.Component {
   state = {
-    isLoading: false,
-    isLoggedIn: false,
-    register: false,
-    favorite: 0,
-    currentUser: {
-      id: '',
-      email: '',
-      address: '',
-      password: '',
-      passwordConfirmation: '',
-      firstName: '',
-      lastName: '',
-      doctors: [],
-      favorites: [],
-    },
+    loading: true,
+    favorites: [],
+    currentUser: {},
     lat: 0,
     lng: 0,
     doctors: [],
-    error: false,
-    apiDoctors: [],
-    users: [],
+    searchIndex: [],
+    doctorShow: {},
+    errors: [],
   };
 
-  isFavorite = () => {
-    // eslint-disable-next-line
-    let favoriteArray = this.state.currentUser.doctors.filter(
-      (doctor) => doctor.api_id == this.props.match.params.id
-    );
-    if (favoriteArray.length > 0) {
-      this.setState({
-        favorite: 1,
-      });
-    }
-  };
-
-  rate = (e, data) => {};
-
-  createDoctor = (doctor, isSeed) => {
-    let doctorObj = {
-      api_id: doctor.id,
-      first_name: doctor.firstName,
-      last_name: doctor.lastName,
-      address: doctor.address,
-      image: doctor.image,
-      specialty: doctor.specialty,
-      title: doctor.title,
-      gender: doctor.gender,
-      bio: doctor.bio,
-      phone_number: doctor.phone,
-    };
-    fetch('https://localhost:3000/doctors', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        Accepts: 'application/json',
+  editProfileOnChange = (e) => {
+    this.setState({
+      ...this.state,
+      currentUser: {
+        ...this.state.currentUser,
+        [e.target.name]: e.target.value,
       },
-      body: JSON.stringify(doctorObj),
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        let doctors = [...this.state.doctors];
-        this.setState(
-          {
-            ...this.state,
-            doctors: [data, ...doctors],
-          },
-          () => {
-            this.props.history.push('/doctors');
-          }
-        );
-      }, this.setState({ isLoading: false }));
-  };
-
-  heart = (doctor) => {
-    let favorite = this.state.currentUser.favorites.find(
-      (favorite) => favorite.api_id == doctor.api_id
-    );
-
-    // eslint-disable-next-line
-    if (typeof favorite == 'object') {
-      this.unHeart(favorite);
-    } else {
-      this.favorite(doctor);
-    }
-  };
-
-  unHeart = (favorite) => {
-    // debugger
-
-    // let favorite = this.state.currentUser.userFavorites.find(favorite => favorite.api_id === doctor.uid)
-    // eslint-disable-next-line
-    fetch(`http://localhost:3000/favorites/${favorite.id}`, {
-      method: 'DELETE',
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        let favorites = this.state.currentUser.favorites.filter(
-          (favorite) => favorite.id !== data.id
-        );
-        let doctors = this.state.currentUser.doctors.filter(
-          (doctor) => doctor.api_id !== data.api_id
-        );
-        this.setState({
-          ...this.state,
-          favorite: 0,
-          doctors: [data.doctor, ...this.state.doctors],
-          currentUser: {
-            ...this.state.currentUser,
-            favorites: favorites,
-            doctors: doctors,
-          },
-        });
-      });
-  };
-
-  favorite = (doctor) => {
-    let favoriteObject = {
-      user_id: this.state.currentUser.id,
-      doctor_id: doctor.id,
-      api_id: doctor.api_id,
-    };
-
-    fetch('http://localhost:3000/favorites', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        accepts: 'application/json',
-      },
-      body: JSON.stringify(favoriteObject),
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        let favorites = [...this.state.currentUser.favorites];
-        let doctors = [...this.state.currentUser.doctors];
-
-        let newdoc = {
-          id: data.doctor_id,
-          api_id: doctor.api_id,
-          first_name: doctor.first_name,
-          last_name: doctor.last_name,
-          title: doctor.title,
-          gender: doctor.gender,
-          bio: doctor.bio,
-          phone_number: doctor.phone_number,
-        };
-
-        // userDoctors.filter
-        this.setState({
-          ...this.state,
-          favorite: 1,
-          currentUser: {
-            ...this.state.currentUser,
-            favorites: [data, ...favorites],
-            doctors: [newdoc, ...doctors],
-          },
-        });
-      });
-  };
-
-  onSubmit = (formData) => {
-    this.logInOrSignUp(formData);
-  };
-
-  logInOrSignUp = (formData) => {
-    fetch('http://localhost:3000/users', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        accepts: 'application/json',
-      },
-      body: JSON.stringify({
-        email: formData.email,
-        password: formData.password,
-        password_confirmation: formData.passwordConfirmation,
-      }),
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        this.setState(
-          {
-            ...this.state,
-            currentUser: {
-              id: data.id,
-              email: data.email,
-              address: data.address,
-              password: data.password,
-              passwordConfirmation: data.password_confirmation,
-              firstName: data.first_name,
-              lastName: data.last_name,
-              doctors: data.doctors,
-              favorites: data.favorites,
-            },
-            isLoggedIn: true,
-          },
-          () => this.props.history.push('/search')
-        );
-      });
-  };
-
-  userProfile = () => {
-    let id = this.state.currentUser.id;
-    fetch(`http://localhost:3000/users/${id}`)
-      .then((resp) => resp.json())
-      .then((data) => {
-        this.setState(
-          {
-            ...this.state,
-            currentUser: {
-              ...this.state.currentUser,
-              doctors: data.doctors,
-            },
-          },
-          () => {
-            this.props.history.push('/profile');
-          }
-        );
-      });
-  };
-
-  logOut = () => {
-    this.props.history.push('/');
-    this.setState({ isLoggedIn: false, currentUser: {}, doctors: [] });
-  };
-
-  onSignUp = () => {
-    this.setState({ register: !this.state.register });
-  };
-  // request to Google GeoCode API to turn string into Longitude/Latitude
-  toGeoCode = (formData) => {
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${formData.address}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
-    )
-      .then((resp) => resp.json())
-      .then((data) =>
-        this.setState(
-          {
-            lat: data['results'][0].geometry.location.lat,
-            lng: data['results'][0].geometry.location.lng,
-          },
-          () => this.getDoctors(formData)
-        )
-      )
-      .catch((err) => console.log(err));
-  };
-
-  // request to BetterDoc API with Long/Lat
-  isResolved = () => {
-    if (this.state.apiDoctors.length < 1) {
-      this.setState({ error: true });
-    } else {
-      this.setState({ error: false });
-    }
-  };
-
-  getDoctors = (formData) => {
-    fetch(
-      `https://api.betterdoctor.com/2015-01-27/doctors?query=${formData.ailment}&location=${this.state.lat}%2C${this.state.lng}%2C${formData.miles}&skip=0&limit=100&user_key=${process.env.REACT_APP_BETTER_DOC}`
-    )
-      .then((resp) => resp.json())
-      .then((data) => {
-        this.setState(
-          {
-            apiDoctors: data.data,
-            isLoading: false,
-          },
-          () => this.isResolved()
-        );
-        this.parseDoctors(data.data);
-      })
-      .catch((err) => {
-        this.getSeeds();
-      });
-  };
-
-  parseDoctors = (doctorsArray) => {
-    let doctors = [];
-    doctorsArray.map((element) => {
-      try {
-        let doctorHash = {};
-        doctorHash.id = element.uid;
-        // doctorHash.image = this.imageApi(element.profile.first_name, element.profile.last_name, element.profile.title)
-        doctorHash.firstName = element.profile.first_name;
-        doctorHash.lastName = element.profile.last_name;
-        if (element.profile.gender === 'male') {
-          doctorHash.image =
-            'https://semantic-ui.com/images/avatar2/large/matthew.png';
-        } else if (element.profile.gender === 'female') {
-          doctorHash.image =
-            'https://semantic-ui.com/images/avatar2/large/kristy.png';
-        } else {
-          doctorHash.image =
-            'https://semantic-ui.com/images/avatar2/large/elyse.png';
-        }
-        doctorHash.title = element.profile.title;
-        doctorHash.bio = element.profile.bio;
-        doctorHash.address = element.practices[0].address;
-        doctorHash.gender = element.profile.gender;
-        doctorHash.phone = element.practices[0].phones[0].number;
-
-        doctorHash.specialty = element.specialties[0].name;
-        doctors.push(doctorHash);
-        this.createDoctor(doctorHash);
-      } catch (err) {
-        console.log(err);
-      }
     });
   };
 
-  loadingHandler = () => {
-    this.setState({ isLoading: true });
+  editProfileOnSubmit = async (e) => {
+    this.loadingHandler(true);
+    e.preventDefault();
+    const { email, address, first_name, last_name } = this.state.currentUser;
+    const payload = {
+      email,
+      address,
+      first_name,
+      last_name,
+    };
+    await this.patchUser(payload);
+    this.loadingHandler(false);
   };
 
-  patchUser = (userData) => {
-    fetch('http://localhost:3000' + `/users/${this.state.currentUser.id}`, {
-      method: 'PATCH',
-      headers: {
-        'content-type': 'application/json',
-        accepts: 'application/json',
-      },
-      body: JSON.stringify({
-        email: userData.email,
-        password: userData.password,
-        password_confirmation: userData.passwordConfirmation,
-        first_name: userData.firstName,
-        last_name: userData.lastName,
-        address: userData.address,
-      }),
-    })
-      .then((resp) => resp.json())
-      .then((data) =>
-        this.setState({
-          ...this.state,
-          currentUser: {
-            doctors: data.doctors,
-            favorites: data.favorites,
-            id: data.id,
-            email: data.email,
-            address: data.address,
-            password: data.password,
-            passwordConfirmation: data.password_confirmation,
-            firstName: data.first_name,
-            lastName: data.last_name,
-          },
-        })
+  saveSearch = async (searchedDoctors) => {
+    let user_id = this.state.currentUser.id;
+    let ids = [];
+    let data;
+    searchedDoctors.forEach((doc) => ids.push(doc.id));
+    let csv = ids.join(',');
+    //
+    const payload = {
+      csv,
+      user_id,
+    };
+    // ;
+    try {
+      let res = await axios.post(`http://localhost:3000/searches`, payload);
+      data = res.data;
+
+      console.log('data from saveSearch', data);
+    } catch (error) {}
+    this.loadingHandler(false);
+    this.props.history.push(`/search/${payload.user_id}/${data.id}`);
+  };
+
+  setSearchIndex = (searchIndex) => {
+    this.setState({ searchIndex });
+  };
+
+  googleSearch = async (payload) => {
+    this.loadingHandler(true);
+    const apidocs = await fetchApiDoctors(payload);
+
+    // this.setState({ searchIndex: apidocs }, () => {
+    //   this.loadingHandler(false);
+    // });
+
+    await apidocs.forEach(async (doc) => {
+      let reviews = await createReviews(doc.place_id, doc.id);
+      if (reviews) {
+        doc.reviews = reviews;
+      }
+    });
+    await apidocs.map(async (doc) => {
+      let photos = await createPhotos(doc.place_id, doc.id);
+      if (photos) {
+        doc.photos = photos;
+      }
+    });
+    this.saveSearch(apidocs);
+  };
+
+  // isFavorite = () => {
+  //   let favoriteArray = this.state.currentUser.doctors.filter(
+  //     (doctor) => doctor.api_id == this.props.match.params.id
+  //   );
+  //   if (favoriteArray.length > 0) {
+  //     this.setState({
+  //       favorite: 1,
+  //     });
+  //   }
+  // };
+
+  loadingHandler = (bool) => {
+    this.setState({ loading: bool });
+  };
+  // request to Google GeoCode API to turn string into Longitude/Latitude
+
+  // request to BetterDoc API with Long/Lat
+
+  patchUser = async (formData) => {
+    try {
+      let res = await axios.patch(
+        `http://localhost:3000/users/${this.state.currentUser.id}`,
+        formData
       );
+
+      //
+      if (res.data.errors) {
+        console.log(res.data.errors);
+      } else {
+        let currentUser = res.data;
+        this.setState({ currentUser }, () => this.loadingHandler(false));
+      }
+    } catch (err) {
+      // console.log(err.data)
+    }
   };
+  getDoctorById = async (id) => {
+    //
+    try {
+      let res = await axios.get(`http://localhost:3000/doctors/${id}`);
 
-  componentDidMount() {
-    // let doctorsInCurrentState = [...this.state.doctors]
-    fetch('http://localhost:3000' + `/users`)
-      .then((resp) => resp.json())
-      .then((users) => {
-        this.setState({
-          users,
-        });
-      });
-  }
-
-  searchButton = () => {
-    if (this.state.isLoggedIn) {
-      this.props.history.push('/search');
-    } else {
-      alert('Please log in before searching');
+      let doctorShow = res.data;
+      this.setState({ doctorShow }, () => this.loadingHandler(false));
+    } catch (err) {
+      console.log(err);
+      throw err;
     }
   };
 
-  getSeeds = () => {
-    fetch('http://localhost:3000/seeds')
-      .then((res) => res.json())
-      .then((doctors) => {
-        this.setState({ doctors, isLoading: false }, () =>
-          this.props.history.push('/doctors')
-        );
+  getDoctors = async () => {
+    try {
+      let res = await axios.get(`http://localhost:3000/doctors`);
+      this.setState({ doctors: res.data }, () => {
+        this.loadingHandler(false);
       });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  loadUser = async () => {
+    const token = localStorage.token;
+    if (token) {
+      //get user info
+      try {
+        let res = await axios.get('http://localhost:3000/auto_login', {
+          headers: { Authorization: token },
+        });
+        if (res.data.errors) {
+          this.setState({ errors: res.data.errors, currentUser: {} });
+        } else {
+          this.setState({ currentUser: res.data });
+        }
+      } catch (err) {
+        if (err) console.log(err);
+      }
+    }
+    this.loadingHandler(false);
+  };
+
+  getFavorites = async () => {
+    // debugger
+    try {
+      let res = await axios.get(`http://localhost:3000/favorites`);
+      const favorites = res.data
+      this.setState({favorites})
+
+    } catch (err) {
+      // debugger
+    }
+  };
+  async componentDidMount() {
+    await this.loadUser();
+    this.getFavorites();
+  }
+
+  login = async (formData) => {
+    try {
+      let res = await axios.post(`http://localhost:3000/login`, formData);
+      if (res.errors) {
+        console.error(res.errors);
+      } else {
+        let currentUser = res.data;
+        this.setUser(currentUser);
+      }
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+    this.loadingHandler(false);
+  };
+  signUp = async (formData) => {
+    try {
+      let res = await axios.post(`http://localhost:3000/users`, formData);
+      // debugger;
+      if (res.errors) {
+        alert(res.errors);
+      } else {
+        let currentUser = res.data;
+        this.setUser(currentUser);
+      }
+    } catch (err) {
+      alert(err);
+    }
+    this.loadingHandler(false);
+  };
+  setUser = (currentUser) => {
+    this.setState(
+      {
+        currentUser: currentUser.user,
+      },
+      () => {
+        localStorage.token = currentUser.token;
+        this.loadUser();
+        this.props.history.push('/search');
+      }
+    );
+  };
+
+  logout = () => {
+    this.props.history.push('/');
+    this.setState(
+      {
+        currentUser: {},
+      },
+      () => {
+        localStorage.removeItem('token');
+      }
+    );
   };
 
   render() {
+    // console.log('THIS.PROPS FROM APP', this.props);
+    console.log('THIS.STATE FROM APP', this.state);
     return (
-      <div>
-        <Button color='red' onClick={() => this.searchButton()}>
-          Search
-        </Button>
-        {this.state.isLoggedIn && (
-          <Button color='red' onClick={() => this.userProfile()}>
-            Profile
-          </Button>
-        )}
-        {this.state.isLoggedIn && (
-          <Button color='red' onClick={this.logOut}>
-            Logout
-          </Button>
-        )}
-        <Image alt='' src=''></Image>
-        {!this.state.isLoggedIn && (
-          <Login
-            isLoggedIn={this.state.isLoggedIn}
-            onSignUp={this.onSignUp}
-            onSubmit={this.onSubmit}
-            register={this.state.register}
-          />
-        )}
+      <>
         <Switch>
           <Route
             exact
-            path='/doctors'
+            path='/'
             render={(routerProps) => (
-              <Doctors
-                createDoctor={this.createDoctor}
+              <Landing
                 {...routerProps}
-                doctors={this.state.doctors}
+                currentUser={this.state.currentUser}
+                loading={this.state.loading}
               />
             )}
           />
           <Route
             exact
-            path='/search'
+            path='/signup'
             render={(routerProps) => (
-              <Search
-                error={this.state.error}
-                isLoading={this.state.isLoading}
-                currentUser={this.state.currentUser}
+              <SignUp
                 loadingHandler={this.loadingHandler}
+                loading={this.state.loading}
                 {...routerProps}
-                toGeoCode={this.toGeoCode}
-                favorite={this.favorite}
+                setUser={this.setUser}
+                signUp={this.signUp}
               />
             )}
           />
+
           <Route
             exact
-            path='/doctors/:id'
+            path='/login'
             render={(routerProps) => (
-              <DoctorShow
-                rate={this.rate}
-                doctors={this.state.doctors}
-                favorite={this.state.favorite}
-                isFavorite={this.isFavorite}
-                heart={this.heart}
-                currentUser={this.state.currentUser}
+              <Login
+                loadingHandler={this.loadingHandler}
+                loading={this.state.loading}
                 {...routerProps}
-                favorite={this.favorite}
+                setUser={this.setUser}
+                login={this.login}
               />
             )}
           />
-          <Route
-            exact
-            path='/profile'
-            render={(routerProps) => (
-              <Profile
-                patchUser={this.patchUser}
+          <Container>
+            {this.state.currentUser && this.state.currentUser.id && (
+              <NavBar
+                signUp={this.signUp}
+                logout={this.logout}
+                loading={this.state.loading}
+                loadingHandler={this.loadingHandler}
                 currentUser={this.state.currentUser}
-                doctors={this.state.doctors}
-                isLoggedIn={this.state.isLoggedIn}
-                {...routerProps}
               />
             )}
-          />
+            <Route
+              exact
+              path='/doctors'
+              render={(routerProps) => (
+                <Doctors
+                  loadUser={this.loadUser}
+                  loadingHandler={this.loadingHandler}
+                  getDoctorById={this.getDoctorById}
+                  currentUser={this.state.currentUser}
+                  loading={this.state.loading}
+                  getDoctors={this.getDoctors}
+                  {...routerProps}
+                  doctors={this.state.doctors}
+                />
+              )}
+            />
+
+            <Route
+              exact
+              path='/search'
+              render={(routerProps) => (
+                <Search
+                  loadingHandler={this.loadingHandler}
+                  error={this.state.error}
+                  loading={this.state.loading}
+                  currentUser={this.state.currentUser}
+                  {...routerProps}
+                  googleSearch={this.googleSearch}
+                  favorite={this.favorite}
+                />
+              )}
+            />
+            <Route
+              exact
+              path='/search/:userId/:searchId'
+              render={(routerProps) => (
+                <SearchIndex
+                  loadingHandler={this.loadingHandler}
+                  setSearchIndex={this.setSearchIndex}
+                  searchIndex={this.state.searchIndex}
+                  loadUser={this.loadUser}
+                  currentUser={this.state.currentUser}
+                  loading={this.state.loading}
+                  {...routerProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path='/conversationlist'
+              render={(routerProps) => <ConversationsList {...routerProps} />}
+            />
+            <Route
+              exact
+              path='/doctors/:id'
+              render={(routerProps) => (
+                <DoctorShow
+                  favorites={this.state.favorites}
+                  loadUser={this.loadUser}
+                  loadingHandler={this.loadingHandler}
+                  loading={this.state.loading}
+                  getDoctorById={this.getDoctorById}
+                  rate={this.rate}
+                  doctors={this.state.doctors}
+                  // favorite={this.state.favorite}
+                  isFavorite={this.isFavorite}
+                  currentUser={this.state.currentUser}
+                  {...routerProps}
+                  // favorite={this.favorite}
+                  doctorShow={this.state.doctorShow}
+                />
+              )}
+            />
+            <Route
+              exact
+              path='/profile'
+              render={(routerProps) => (
+                <Profile
+                  loading={this.state.loading}
+                  loadingHandler={this.loadingHandler}
+                  currentUser={this.state.currentUser}
+                  doctors={this.state.doctors}
+                  loadUser={this.loadUser}
+                  {...routerProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path='/profile/edit'
+              render={(routerProps) => (
+                <Edit
+                  editProfileOnChange={this.editProfileOnChange}
+                  editProfileOnSubmit={this.editProfileOnSubmit}
+                  loading={this.state.loading}
+                  loadingHandler={this.loadingHandler}
+                  patchUser={this.patchUser}
+                  currentUser={this.state.currentUser}
+                  loadUser={this.loadUser}
+                  {...routerProps}
+                />
+              )}
+            />
+          </Container>
         </Switch>
-      </div>
+      </>
     );
   }
 }
