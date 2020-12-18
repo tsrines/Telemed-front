@@ -1,42 +1,53 @@
-import React from 'react'
-import { Card, Grid } from 'semantic-ui-react'
-import DoctorCard from '../components/DoctorCard'
-import { withRouter } from 'react-router-dom'
+import React from 'react';
+import { Card, Grid } from 'semantic-ui-react';
+import DoctorCard from '../components/DoctorCard';
 
 class Doctors extends React.Component {
+  displayDoctors = () => {
+    if (this.props.doctors) {
+      return this.props.doctors.map((doctor) => (
+        <DoctorCard
+          currentUser={this.props.currentUser}
+          getDoctorById={this.props.getDoctorById}
+          key={doctor.id}
+          doctor={doctor}
+          loading={this.props.loading}
+        />
+      ));
+    }
+  };
 
-  state = {
-    address: "",
-    ailment: "",
-    miles: "",
+  displayLoading = () => {
+    return <h1>Loading...</h1>;
+  };
 
-  }
-
-  onChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value
-    })
-  }
-
-  onSubmit = (e) => {
-    const formData = this.state
-    e.preventDefault()
-    this.props.toGeoCode(formData)
+  async componentDidMount() {
+    await this.props.getDoctors();
   }
 
   render() {
-    let displayDoctors = this.props.doctors.map(doctor => <DoctorCard createDoctor={this.props.createDoctor} doctors={this.props.doctors} key={doctor.id} {...doctor} />)
+    console.log('this.props from doctorsjs', this.props);
     return (
       <div>
-        <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+        <Grid
+          container
+          textAlign='center'
+          style={{ height: '100vh' }}
+          verticalAlign='middle'
+        >
           <br></br>
-          <Card.Group style={{ overflow: 'auto', maxHeight: '65em' }} display='flex' justify-content='center' itemsPerRow={6}>
-            {displayDoctors}
+          <Card.Group
+            style={{ maxHeight: '35em' }}
+            display='flex'
+            justify-content='center'
+            itemsPerRow={3}
+          >
+            {this.displayDoctors()}
           </Card.Group>
         </Grid>
       </div>
-    )
+    );
   }
 }
 
-export default withRouter(Doctors)
+export default Doctors;
