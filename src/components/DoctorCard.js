@@ -4,15 +4,17 @@ import { withRouter } from 'react-router';
 import defaultphoto from '../../src/defaultphoto.png';
 
 const DoctorCard = (props) => {
-  const { id, name, photos, formatted_address, rating, photo } = props.doctor;
+  const { id, name, formatted_address, rating, photo } = props.doctor;
 
   return (
-    <Card  inverted onClick={(e) => props.history.push(`/doctors/${id}`)}>
-      <Card.Content >
+    <Card inverted onClick={(e) => props.history.push(`/doctors/${id}`)}>
+      <Card.Content>
         <Card.Header>{name}</Card.Header>
       </Card.Content>
       {photo && <Image fluid alt='Practice Image' src={photo} />}
-      {!photo && <Image fluid centered alt='Practice Image' src={defaultphoto}/>}
+      {!photo && (
+        <Image fluid centered alt='Practice Image' src={defaultphoto} />
+      )}
       <Card.Content>
         {formatted_address}
         {rating && (

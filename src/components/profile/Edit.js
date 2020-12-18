@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
 
-import {
-  Form,
-  FormField,
-  Label,
-  Input,
-  Button,
-  Confirm,
-  FormButton,
-} from 'semantic-ui-react';
+import { Form, FormField, Input, Confirm, FormButton } from 'semantic-ui-react';
 
 export default class Edit extends Component {
   state = { open: false, result: 'show the modal to capture a result' };
@@ -21,7 +13,7 @@ export default class Edit extends Component {
   handleCancel = () => this.setState({ result: 'cancelled', open: false });
 
   render() {
-    const { open, result } = this.state;
+    const { open } = this.state;
 
     return (
       <Form
@@ -104,7 +96,7 @@ export default class Edit extends Component {
           open={open}
           type='submit'
           onCancel={this.handleCancel}
-          onConfirm={e =>this.handleConfirm(e)}
+          onConfirm={(e) => this.handleConfirm(e)}
         />
       </Form>
     );

@@ -5,7 +5,6 @@ import {
   Image,
   Button,
   Grid,
-  Segment,
   Label,
   Input,
 } from 'semantic-ui-react';
@@ -32,7 +31,7 @@ class Search extends React.Component {
     e.preventDefault();
     this.props.loadingHandler(true);
     const payload = this.state;
-    const { lat, lng, distance, query, address } = this.state;
+    const { lat, lng, query, address } = this.state;
     if (lat === null && lng === null) {
       try {
         let res = await axios.get(

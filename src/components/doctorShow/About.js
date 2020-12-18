@@ -18,7 +18,7 @@ const About = ({
 }) => {
   useEffect(() => {
     loadUser();
-  }, []);
+  }, [loadUser]);
 
   return (
     <Segment textAlign='center'>

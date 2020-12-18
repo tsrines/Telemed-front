@@ -10,9 +10,7 @@ export default class SearchIndex extends Component {
     const index = [];
     // debugger;
     const searchId = parseInt(this.props.match.params.searchId);
-    const userId = parseInt(this.props.match.params.userId);
-    // if (userId !== this.props.currentUser.id)
-    //   this.props.history.push('/search');
+
     const searches = this.props.currentUser.searches;
     try {
       let csv = searches.find((search) => searchId === search.id).csv;
@@ -35,13 +33,12 @@ export default class SearchIndex extends Component {
       console.log(err);
       throw err;
     }
-
   };
 
   displayDoctors = () => {
     // this.props.loadingHandler(false)
-    let sortedIndex = [...this.props.searchIndex].sort((a,b) => a.id-b.id)
-     return sortedIndex.map((doctor) => (
+    let sortedIndex = [...this.props.searchIndex].sort((a, b) => a.id - b.id);
+    return sortedIndex.map((doctor) => (
       <DoctorCard
         currentUser={this.props.currentUser}
         getDoctorById={this.props.getDoctorById}

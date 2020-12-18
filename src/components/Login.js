@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Form, Grid, Header, Image, Segment } from 'semantic-ui-react';
 import { withRouter, Link } from 'react-router-dom';
-import SignUp from './SignUp';
 
 class Login extends React.Component {
   state = {
@@ -63,10 +62,8 @@ class Login extends React.Component {
                 Login
               </Button>
             </Segment>
-
           </Form>
-          Don't have an account? {" "}
-          <Link to='/signup'>Sign Up!</Link>
+          Don't have an account? <Link to='/signup'>Sign Up!</Link>
         </Grid.Column>
       </Grid>
     );

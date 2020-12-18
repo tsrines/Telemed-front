@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Container,
-  Header,
-  Image,
-  Segment,
-  List,
-  Divider,
-} from 'semantic-ui-react';
+import { Button, Header, Image, List, Divider } from 'semantic-ui-react';
 import { Link, withRouter } from 'react-router-dom';
 
 const NavBar = ({ history, currentUser, logout }) => {

@@ -7,7 +7,7 @@ import {
   Rating,
   Image,
   Grid,
-  Divider,
+
 } from 'semantic-ui-react';
 
 const Reviews = ({ reviews }) => {

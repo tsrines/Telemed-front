@@ -8,10 +8,10 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
-const Profile = ({ currentUser, loadUser, history, loading }) => {
+const Profile = ({ currentUser, loadUser, loading }) => {
   useEffect(() => {
     loadUser();
-  }, []);
+  }, [loadUser]);
   const profileDoctors = () =>
     currentUser.doctors &&
     currentUser.doctors.map((doc) => <DoctorCard key={doc.id} doctor={doc} />);

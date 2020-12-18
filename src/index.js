@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { API_WS_ROOT, API_ROOT, HEADERS } from './constants';
+import { API_WS_ROOT } from './constants';
 import { ActionCableProvider } from 'react-actioncable-provider';
 
 ReactDOM.render(
