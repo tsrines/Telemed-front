@@ -175,7 +175,7 @@ class App extends React.Component {
           this.setState({ currentUser: res.data });
         }
       } catch (err) {
-        console.error(error);
+        console.error(err);
       }
     }
     this.loadingHandler(false);
