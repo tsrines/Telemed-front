@@ -124,7 +124,6 @@ class Search extends React.Component {
                       toggle
                       onChange={(e) => this.toggleUseCurrentPosition(e)}
                       type='checkbox'
-                      value={this.state.browserLocation}
                       checked={this.state.browserLocation}
                     />
                   </div>

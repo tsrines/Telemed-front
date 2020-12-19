@@ -292,120 +292,120 @@ class App extends React.Component {
               />
             )}
           />
-          <Container>
-            {this.state.currentUser && this.state.currentUser.id && (
-              <NavBar
-                signUp={this.signUp}
-                logout={this.logout}
-                loading={this.state.loading}
-                loadingHandler={this.loadingHandler}
-                currentUser={this.state.currentUser}
+          <>
+            <Container>
+              {this.state.currentUser && this.state.currentUser.id && (
+                <NavBar
+                  signUp={this.signUp}
+                  logout={this.logout}
+                  loading={this.state.loading}
+                  loadingHandler={this.loadingHandler}
+                  currentUser={this.state.currentUser}
+                />
+              )}
+              <Route
+                exact
+                path='/doctors'
+                render={(routerProps) => (
+                  <Doctors
+                    loadUser={this.loadUser}
+                    loadingHandler={this.loadingHandler}
+                    getDoctorById={this.getDoctorById}
+                    currentUser={this.state.currentUser}
+                    loading={this.state.loading}
+                    getDoctors={this.getDoctors}
+                    {...routerProps}
+                    doctors={this.state.doctors}
+                  />
+                )}
               />
-            )}
-            <Route
-              exact
-              path='/doctors'
-              render={(routerProps) => (
-                <Doctors
-                  loadUser={this.loadUser}
-                  loadingHandler={this.loadingHandler}
-                  getDoctorById={this.getDoctorById}
-                  currentUser={this.state.currentUser}
-                  loading={this.state.loading}
-                  getDoctors={this.getDoctors}
-                  {...routerProps}
-                  doctors={this.state.doctors}
-                />
-              )}
-            />
 
-            <Route
-              exact
-              path='/search'
-              render={(routerProps) => (
-                <Search
-                  loadingHandler={this.loadingHandler}
-                  error={this.state.error}
-                  loading={this.state.loading}
-                  currentUser={this.state.currentUser}
-                  {...routerProps}
-                  googleSearch={this.googleSearch}
-                  favorite={this.favorite}
-                />
-              )}
-            />
-            <Route
-              exact
-              path='/search/:userId/:searchId'
-              render={(routerProps) => (
-                <SearchIndex
-                  loadingHandler={this.loadingHandler}
-                  setSearchIndex={this.setSearchIndex}
-                  searchIndex={this.state.searchIndex}
-                  loadUser={this.loadUser}
-                  currentUser={this.state.currentUser}
-                  loading={this.state.loading}
-                  {...routerProps}
-                />
-              )}
-            />
-            <Route
-              exact
-              path='/conversationlist'
-              render={(routerProps) => <ConversationsList {...routerProps} />}
-            />
-            <Route
-              exact
-              path='/doctors/:id'
-              render={(routerProps) => (
-                <DoctorShow
-                  favorites={this.state.favorites}
-                  loadUser={this.loadUser}
-                  loadingHandler={this.loadingHandler}
-                  loading={this.state.loading}
-                  getDoctorById={this.getDoctorById}
-                  rate={this.rate}
-                  doctors={this.state.doctors}
-                  // favorite={this.state.favorite}
-                  isFavorite={this.isFavorite}
-                  currentUser={this.state.currentUser}
-                  {...routerProps}
-                  // favorite={this.favorite}
-                  doctorShow={this.state.doctorShow}
-                />
-              )}
-            />
-            <Route
-              exact
-              path='/profile'
-              render={(routerProps) => (
-                <Profile
-                  loading={this.state.loading}
-                  loadingHandler={this.loadingHandler}
-                  currentUser={this.state.currentUser}
-                  doctors={this.state.doctors}
-                  loadUser={this.loadUser}
-                  {...routerProps}
-                />
-              )}
-            />
-            <Route
-              exact
-              path='/profile/edit'
-              render={(routerProps) => (
-                <Edit
-                  editProfileOnChange={this.editProfileOnChange}
-                  editProfileOnSubmit={this.editProfileOnSubmit}
-                  loading={this.state.loading}
-                  loadingHandler={this.loadingHandler}
-                  patchUser={this.patchUser}
-                  currentUser={this.state.currentUser}
-                  loadUser={this.loadUser}
-                  {...routerProps}
-                />
-              )}
-            />
-          </Container>
+              <Route
+                exact
+                path='/search'
+                render={(routerProps) => (
+                  <Search
+                    loadingHandler={this.loadingHandler}
+                    error={this.state.error}
+                    loading={this.state.loading}
+                    currentUser={this.state.currentUser}
+                    {...routerProps}
+                    googleSearch={this.googleSearch}
+                    favorite={this.favorite}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path='/search/:userId/:searchId'
+                render={(routerProps) => (
+                  <SearchIndex
+                    loadingHandler={this.loadingHandler}
+                    setSearchIndex={this.setSearchIndex}
+                    searchIndex={this.state.searchIndex}
+                    loadUser={this.loadUser}
+                    currentUser={this.state.currentUser}
+                    loading={this.state.loading}
+                    {...routerProps}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path='/conversationlist'
+                render={(routerProps) => <ConversationsList {...routerProps} />}
+              />
+              <Route
+                exact
+                path='/doctors/:id'
+                render={(routerProps) => (
+                  <DoctorShow
+                    favorites={this.state.favorites}
+                    loadUser={this.loadUser}
+                    loadingHandler={this.loadingHandler}
+                    loading={this.state.loading}
+                    getDoctorById={this.getDoctorById}
+                    rate={this.rate}
+                    doctors={this.state.doctors}
+                    isFavorite={this.isFavorite}
+                    currentUser={this.state.currentUser}
+                    {...routerProps}
+                    doctorShow={this.state.doctorShow}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path='/profile'
+                render={(routerProps) => (
+                  <Profile
+                    loading={this.state.loading}
+                    loadingHandler={this.loadingHandler}
+                    currentUser={this.state.currentUser}
+                    doctors={this.state.doctors}
+                    loadUser={this.loadUser}
+                    {...routerProps}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path='/profile/edit'
+                render={(routerProps) => (
+                  <Edit
+                    editProfileOnChange={this.editProfileOnChange}
+                    editProfileOnSubmit={this.editProfileOnSubmit}
+                    loading={this.state.loading}
+                    loadingHandler={this.loadingHandler}
+                    patchUser={this.patchUser}
+                    currentUser={this.state.currentUser}
+                    loadUser={this.loadUser}
+                    {...routerProps}
+                  />
+                )}
+              />
+            </Container>
+          </>
         </Switch>
       </>
     );
