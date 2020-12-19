@@ -1,1 +1,1 @@
-export const backendUrl = 'https://cryptic-island-45793.herokuapp.com';
+export const backendUrl = 'https://blooming-garden-41309.herokuapp.com';
