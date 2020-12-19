@@ -26,7 +26,6 @@ class Doctors extends React.Component {
   }
 
   render() {
-    console.log('this.props from doctorsjs', this.props);
     return (
       <div>
         <Grid

@@ -17,21 +17,16 @@ export default class SearchIndex extends Component {
       csv = csv.split(',');
 
       await csv.map(async (id) => {
-        // console.log(id);
         let doctorId = parseInt(id);
         let res = await Axios.get(`http://localhost:3000/doctors/${doctorId}`);
         let doc = res.data;
-
-        // console.log(doc);
         index.push(doc);
-
         this.props.setSearchIndex(index);
       });
     } catch (err) {
       alert('Something went wrong, please search again');
       this.props.history.push('/search');
-      console.log(err);
-      throw err;
+      console.error(err);
     }
   };
 

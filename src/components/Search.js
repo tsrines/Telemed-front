@@ -48,12 +48,10 @@ class Search extends React.Component {
     // this.props.loadingHandler(false);
   };
   componentDidMount() {
-    console.log(this.state);
     const browserLocation = localStorage.getItem('browserLocationEnabled');
     if (browserLocation) {
       const [lat, lng] = browserLocation.split(',');
 
-      console.log(lat, lng);
       this.setState({ ...this.state, browserLocation: true, lat, lng });
     } else {
       this.setState({
@@ -70,7 +68,7 @@ class Search extends React.Component {
       this.setState({ ...this.state, browserLocation: true });
       const geo = navigator.geolocation;
       if (!geo) {
-        console.log('Geo not supported');
+        console.error('Geo not supported');
       } else {
         geo.getCurrentPosition(({ coords: { latitude, longitude } }) => {
           localStorage.setItem(
@@ -96,7 +94,6 @@ class Search extends React.Component {
   };
 
   render() {
-    console.log(this.state);
     return (
       <div>
         <Grid

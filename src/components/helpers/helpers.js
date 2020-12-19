@@ -10,7 +10,7 @@ export const createDoctors = async (doctors) => {
       );
       detailedDoctor = res.data.result;
     } catch (err) {
-      console.log('Error', err);
+      console.error('Error', err);
     }
 
     const {
@@ -59,7 +59,7 @@ export const createDoctors = async (doctors) => {
 
       data = await res.json();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
     docArray.push(data);
   });

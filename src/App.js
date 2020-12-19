@@ -72,8 +72,6 @@ class App extends React.Component {
     try {
       let res = await axios.post(`http://localhost:3000/searches`, payload);
       data = res.data;
-
-      console.log('data from saveSearch', data);
     } catch (error) {}
     this.loadingHandler(false);
     this.props.history.push(`/search/${payload.user_id}/${data.id}`);
@@ -133,14 +131,12 @@ class App extends React.Component {
 
       //
       if (res.data.errors) {
-        console.log(res.data.errors);
+        console.error(res.data.errors);
       } else {
         let currentUser = res.data;
         this.setState({ currentUser }, () => this.loadingHandler(false));
       }
-    } catch (err) {
-      // console.log(err.data)
-    }
+    } catch (err) {}
   };
   getDoctorById = async (id) => {
     //
@@ -150,7 +146,7 @@ class App extends React.Component {
       let doctorShow = res.data;
       this.setState({ doctorShow }, () => this.loadingHandler(false));
     } catch (err) {
-      console.log(err);
+      console.error(err);
       throw err;
     }
   };
@@ -162,8 +158,7 @@ class App extends React.Component {
         this.loadingHandler(false);
       });
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.error(error);
     }
   };
   loadUser = async () => {
@@ -180,7 +175,7 @@ class App extends React.Component {
           this.setState({ currentUser: res.data });
         }
       } catch (err) {
-        if (err) console.log(err);
+        console.error(error);
       }
     }
     this.loadingHandler(false);
@@ -190,9 +185,8 @@ class App extends React.Component {
     // debugger
     try {
       let res = await axios.get(`http://localhost:3000/favorites`);
-      const favorites = res.data
-      this.setState({favorites})
-
+      const favorites = res.data;
+      this.setState({ favorites });
     } catch (err) {
       // debugger
     }
@@ -212,8 +206,7 @@ class App extends React.Component {
         this.setUser(currentUser);
       }
     } catch (err) {
-      console.log(err);
-      throw err;
+      console.error(err);
     }
     this.loadingHandler(false);
   };
@@ -258,8 +251,6 @@ class App extends React.Component {
   };
 
   render() {
-    // console.log('THIS.PROPS FROM APP', this.props);
-    console.log('THIS.STATE FROM APP', this.state);
     return (
       <>
         <Switch>
