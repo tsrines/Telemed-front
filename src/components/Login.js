@@ -42,6 +42,7 @@ class Login extends React.Component {
               <Form.Input
                 onChange={(e) => this.onChange(e)}
                 name='email'
+                type='email'
                 value={this.state.email}
                 fluid
                 icon='user'

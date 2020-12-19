@@ -21,28 +21,25 @@ class Search extends React.Component {
   };
 
   onChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   onSubmit = async (e) => {
-    console.log('this.props from search', this.props);
     e.preventDefault();
     this.props.loadingHandler(true);
-    const payload = this.state;
-    const { lat, lng, query, address } = this.state;
-    if (lat === null && lng === null) {
+    const payload = { ...this.state };
+    const { query, address } = this.state;
+    if (!this.state.browserLocation) {
       try {
-        let res = await axios.get(
+        let { data } = await axios.get(
           `http://localhost:3000/geocodes/coords?address=${address}`
         );
-        payload.lat = res.data.lat;
-        payload.lng = res.data.lng;
+        payload.lat = data.lat;
+        payload.lng = data.lng;
         payload.query = query;
         await this.props.googleSearch(payload);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     } else {
       payload.query = query;
@@ -51,12 +48,21 @@ class Search extends React.Component {
     // this.props.loadingHandler(false);
   };
   componentDidMount() {
-    this.setState({
-      ...this.state,
-      browserLocation: false,
-      lat: null,
-      lng: null,
-    });
+    console.log(this.state);
+    const browserLocation = localStorage.getItem('browserLocationEnabled');
+    if (browserLocation) {
+      const [lat, lng] = browserLocation.split(',');
+
+      console.log(lat, lng);
+      this.setState({ ...this.state, browserLocation: true, lat, lng });
+    } else {
+      this.setState({
+        ...this.state,
+        browserLocation: false,
+        lat: null,
+        lng: null,
+      });
+    }
   }
 
   toggleUseCurrentPosition = async (e) => {
@@ -66,15 +72,20 @@ class Search extends React.Component {
       if (!geo) {
         console.log('Geo not supported');
       } else {
-        geo.getCurrentPosition((position) => {
+        geo.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+          localStorage.setItem(
+            'browserLocationEnabled',
+            `${latitude.toString()},${longitude.toString()}`
+          );
           this.setState({
             ...this.state,
-            lat: position.coords.latitude.toString(),
-            lng: position.coords.longitude.toString(),
+            lat: latitude.toString(),
+            lng: longitude.toString(),
           });
         });
       }
     } else {
+      localStorage.removeItem('browserLocationEnabled');
       this.setState({
         ...this.state,
         browserLocation: false,
@@ -85,6 +96,7 @@ class Search extends React.Component {
   };
 
   render() {
+    console.log(this.state);
     return (
       <div>
         <Grid
@@ -97,19 +109,18 @@ class Search extends React.Component {
               <Image src='../favicon.ico' />
               Telemed
             </Header>
-            {/* {this.props.loading && <Segment>Loading...</Segment>} */}
 
             <Form onSubmit={this.onSubmit}>
               <>
                 <Label pointing='below'>Use current location</Label>
-
                 <Form.Field>
-                  {/* <Label>Current Location?</Label> */}
                   <Form.Checkbox
                     toggle
+                    onChange={(e) => this.toggleUseCurrentPosition(e)}
+                    type='checkbox'
                     value={this.state.browserLocation}
-                    onClick={this.toggleUseCurrentPosition}
-                  ></Form.Checkbox>
+                    checked={this.state.browserLocation}
+                  />
                   {!this.state.browserLocation && (
                     <Input
                       fluid
