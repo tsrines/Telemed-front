@@ -109,15 +109,26 @@ class Search extends React.Component {
 
             <Form onSubmit={this.onSubmit}>
               <>
-                <Label pointing='below'>Use current location</Label>
                 <Form.Field>
-                  <Form.Checkbox
-                    toggle
-                    onChange={(e) => this.toggleUseCurrentPosition(e)}
-                    type='checkbox'
-                    value={this.state.browserLocation}
-                    checked={this.state.browserLocation}
-                  />
+                  <div
+                    style={{
+                      marginBottom: `15px`,
+                      display: `flex`,
+                      flexDirection: `row`,
+                      justifyContent: `center`,
+                    }}
+                  >
+                    <Label>Use current location</Label>
+                    <Form.Checkbox
+                      style={{ marginLeft: `15px` }}
+                      toggle
+                      onChange={(e) => this.toggleUseCurrentPosition(e)}
+                      type='checkbox'
+                      value={this.state.browserLocation}
+                      checked={this.state.browserLocation}
+                    />
+                  </div>
+
                   {!this.state.browserLocation && (
                     <Input
                       fluid
