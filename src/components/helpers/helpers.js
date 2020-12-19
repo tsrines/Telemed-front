@@ -6,7 +6,7 @@ export const createDoctors = async (doctors) => {
     let detailedDoctor;
     try {
       let res = await axios.get(
-        `http://localhost:3000/geocodes/details/${doctor.place_id}`
+        `https://cryptic-island-45793.herokuapp.com/geocodes/details/${doctor.place_id}`
       );
       detailedDoctor = res.data.result;
     } catch (err) {
@@ -53,7 +53,7 @@ export const createDoctors = async (doctors) => {
     let data;
     try {
       let res = await fetch(
-        'http://localhost:3000/doctors',
+        'https://cryptic-island-45793.herokuapp.com/doctors',
         postDoctorsOptions
       );
 

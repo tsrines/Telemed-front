@@ -32,7 +32,7 @@ class Search extends React.Component {
     if (!this.state.browserLocation) {
       try {
         let { data } = await axios.get(
-          `http://localhost:3000/geocodes/coords?address=${address}`
+          `https://cryptic-island-45793.herokuapp.com/geocodes/coords?address=${address}`
         );
         payload.lat = data.lat;
         payload.lng = data.lng;

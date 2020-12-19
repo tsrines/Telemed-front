@@ -70,7 +70,10 @@ class App extends React.Component {
     };
     // ;
     try {
-      let res = await axios.post(`http://localhost:3000/searches`, payload);
+      let res = await axios.post(
+        `https://cryptic-island-45793.herokuapp.com/searches`,
+        payload
+      );
       data = res.data;
     } catch (error) {}
     this.loadingHandler(false);
@@ -125,7 +128,7 @@ class App extends React.Component {
   patchUser = async (formData) => {
     try {
       let res = await axios.patch(
-        `http://localhost:3000/users/${this.state.currentUser.id}`,
+        `https://cryptic-island-45793.herokuapp.com/users/${this.state.currentUser.id}`,
         formData
       );
 
@@ -141,7 +144,9 @@ class App extends React.Component {
   getDoctorById = async (id) => {
     //
     try {
-      let res = await axios.get(`http://localhost:3000/doctors/${id}`);
+      let res = await axios.get(
+        `https://cryptic-island-45793.herokuapp.com/doctors/${id}`
+      );
 
       let doctorShow = res.data;
       this.setState({ doctorShow }, () => this.loadingHandler(false));
@@ -153,7 +158,9 @@ class App extends React.Component {
 
   getDoctors = async () => {
     try {
-      let res = await axios.get(`http://localhost:3000/doctors`);
+      let res = await axios.get(
+        `https://cryptic-island-45793.herokuapp.com/doctors`
+      );
       this.setState({ doctors: res.data }, () => {
         this.loadingHandler(false);
       });
@@ -166,9 +173,12 @@ class App extends React.Component {
     if (token) {
       //get user info
       try {
-        let res = await axios.get('http://localhost:3000/auto_login', {
-          headers: { Authorization: token },
-        });
+        let res = await axios.get(
+          'https://cryptic-island-45793.herokuapp.com/auto_login',
+          {
+            headers: { Authorization: token },
+          }
+        );
         if (res.data.errors) {
           this.setState({ errors: res.data.errors, currentUser: {} });
         } else {
@@ -184,7 +194,9 @@ class App extends React.Component {
   getFavorites = async () => {
     // debugger
     try {
-      let res = await axios.get(`http://localhost:3000/favorites`);
+      let res = await axios.get(
+        `https://cryptic-island-45793.herokuapp.com/favorites`
+      );
       const favorites = res.data;
       this.setState({ favorites });
     } catch (err) {
@@ -198,7 +210,10 @@ class App extends React.Component {
 
   login = async (formData) => {
     try {
-      let res = await axios.post(`http://localhost:3000/login`, formData);
+      let res = await axios.post(
+        `https://cryptic-island-45793.herokuapp.com/login`,
+        formData
+      );
       if (res.errors) {
         console.error(res.errors);
       } else {
@@ -212,7 +227,10 @@ class App extends React.Component {
   };
   signUp = async (formData) => {
     try {
-      let res = await axios.post(`http://localhost:3000/users`, formData);
+      let res = await axios.post(
+        `https://cryptic-island-45793.herokuapp.com/users`,
+        formData
+      );
       // debugger;
       if (res.errors) {
         alert(res.errors);

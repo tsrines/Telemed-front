@@ -18,7 +18,9 @@ export default class SearchIndex extends Component {
 
       await csv.map(async (id) => {
         let doctorId = parseInt(id);
-        let res = await Axios.get(`http://localhost:3000/doctors/${doctorId}`);
+        let res = await Axios.get(
+          `https://cryptic-island-45793.herokuapp.com/doctors/${doctorId}`
+        );
         let doc = res.data;
         index.push(doc);
         this.props.setSearchIndex(index);

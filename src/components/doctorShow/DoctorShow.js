@@ -36,7 +36,7 @@ class DoctorShow extends React.Component {
     };
     try {
       let res = await axios.post(
-        `http://localhost:3000/favorites`,
+        `https://cryptic-island-45793.herokuapp.com/favorites`,
         favoriteObject
       );
       this.setState({ favorite: 1, id: res.data.id }, () => {
@@ -56,7 +56,9 @@ class DoctorShow extends React.Component {
       this.setState({ favorite: 0 });
     }
     try {
-      await axios.delete(`http://localhost:3000/favorites/${favorite.id}`);
+      await axios.delete(
+        `https://cryptic-island-45793.herokuapp.com/favorites/${favorite.id}`
+      );
 
       this.setState({ favorite: 0 }, () => {
         this.props.loadUser();
