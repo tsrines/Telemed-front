@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { backendUrl } from '../../helpers/constants';
 
 export const createDoctors = async (doctors) => {
   const docArray = [];
@@ -6,7 +7,7 @@ export const createDoctors = async (doctors) => {
     let detailedDoctor;
     try {
       let res = await axios.get(
-        `https://cryptic-island-45793.herokuapp.com/geocodes/details/${doctor.place_id}`
+        `${backendUrl}/geocodes/details/${doctor.place_id}`
       );
       detailedDoctor = res.data.result;
     } catch (err) {
@@ -52,10 +53,7 @@ export const createDoctors = async (doctors) => {
     };
     let data;
     try {
-      let res = await fetch(
-        'https://cryptic-island-45793.herokuapp.com/doctors',
-        postDoctorsOptions
-      );
+      let res = await fetch(`${backendUrl}/doctors`, postDoctorsOptions);
 
       data = await res.json();
     } catch (err) {

@@ -9,6 +9,7 @@ import {
   Input,
 } from 'semantic-ui-react';
 import axios from 'axios';
+import { backendUrl } from '../helpers/constants';
 
 class Search extends React.Component {
   state = {
@@ -32,7 +33,7 @@ class Search extends React.Component {
     if (!this.state.browserLocation) {
       try {
         let { data } = await axios.get(
-          `https://cryptic-island-45793.herokuapp.com/geocodes/coords?address=${address}`
+          `${backendUrl}/geocodes/coords?address=${address}`
         );
         payload.lat = data.lat;
         payload.lng = data.lng;

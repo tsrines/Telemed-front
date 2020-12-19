@@ -1,11 +1,9 @@
 import axios from 'axios';
+import { backendUrl } from './constants';
 
 export const fetchApiDoctors = async (payload) => {
   try {
-    let res = await axios.post(
-      `https://cryptic-island-45793.herokuapp.com/doctors`,
-      payload
-    );
+    let res = await axios.post(`${backendUrl}/doctors`, payload);
     return res.data;
   } catch (err) {
     console.error('This is your error:', err);
@@ -19,10 +17,7 @@ export const createReviews = async (place_id, doctor_id) => {
   };
 
   try {
-    let res = await axios.post(
-      'https://cryptic-island-45793.herokuapp.com/reviews',
-      reviewPayload
-    );
+    let res = await axios.post(`${backendUrl}/reviews`, reviewPayload);
     return res.data;
   } catch (error) {}
 };
@@ -34,10 +29,7 @@ export const createPhotos = async (doctor_reference, doctor_id) => {
   };
 
   try {
-    let res = await axios.post(
-      `https://cryptic-island-45793.herokuapp.com/photos`,
-      photoHash
-    );
+    let res = await axios.post(`${backendUrl}/photos`, photoHash);
     return res.data;
   } catch (err) {}
 };

@@ -19,6 +19,7 @@ import { Container } from 'semantic-ui-react';
 import Edit from './components/profile/Edit';
 import SearchIndex from './containers/SearchIndex';
 import ConversationsList from './components/ConversationsList';
+import { backendUrl } from './helpers/constants';
 
 class App extends React.Component {
   state = {
@@ -70,10 +71,7 @@ class App extends React.Component {
     };
     // ;
     try {
-      let res = await axios.post(
-        `https://cryptic-island-45793.herokuapp.com/searches`,
-        payload
-      );
+      let res = await axios.post(`${backendUrl}/searches`, payload);
       data = res.data;
     } catch (error) {}
     this.loadingHandler(false);
@@ -128,7 +126,7 @@ class App extends React.Component {
   patchUser = async (formData) => {
     try {
       let res = await axios.patch(
-        `https://cryptic-island-45793.herokuapp.com/users/${this.state.currentUser.id}`,
+        `${backendUrl}/users/${this.state.currentUser.id}`,
         formData
       );
 
@@ -144,9 +142,7 @@ class App extends React.Component {
   getDoctorById = async (id) => {
     //
     try {
-      let res = await axios.get(
-        `https://cryptic-island-45793.herokuapp.com/doctors/${id}`
-      );
+      let res = await axios.get(`${backendUrl}/doctors/${id}`);
 
       let doctorShow = res.data;
       this.setState({ doctorShow }, () => this.loadingHandler(false));
@@ -158,9 +154,7 @@ class App extends React.Component {
 
   getDoctors = async () => {
     try {
-      let res = await axios.get(
-        `https://cryptic-island-45793.herokuapp.com/doctors`
-      );
+      let res = await axios.get(`${backendUrl}/doctors`);
       this.setState({ doctors: res.data }, () => {
         this.loadingHandler(false);
       });
@@ -173,12 +167,9 @@ class App extends React.Component {
     if (token) {
       //get user info
       try {
-        let res = await axios.get(
-          'https://cryptic-island-45793.herokuapp.com/auto_login',
-          {
-            headers: { Authorization: token },
-          }
-        );
+        let res = await axios.get(`${backendUrl}/auto_login`, {
+          headers: { Authorization: token },
+        });
         if (res.data.errors) {
           this.setState({ errors: res.data.errors, currentUser: {} });
         } else {
@@ -194,9 +185,7 @@ class App extends React.Component {
   getFavorites = async () => {
     // debugger
     try {
-      let res = await axios.get(
-        `https://cryptic-island-45793.herokuapp.com/favorites`
-      );
+      let res = await axios.get(`${backendUrl}/favorites`);
       const favorites = res.data;
       this.setState({ favorites });
     } catch (err) {
@@ -210,10 +199,7 @@ class App extends React.Component {
 
   login = async (formData) => {
     try {
-      let res = await axios.post(
-        `https://cryptic-island-45793.herokuapp.com/login`,
-        formData
-      );
+      let res = await axios.post(`${backendUrl}/login`, formData);
       if (res.errors) {
         console.error(res.errors);
       } else {
@@ -227,10 +213,7 @@ class App extends React.Component {
   };
   signUp = async (formData) => {
     try {
-      let res = await axios.post(
-        `https://cryptic-island-45793.herokuapp.com/users`,
-        formData
-      );
+      let res = await axios.post(`${backendUrl}/users`, formData);
       // debugger;
       if (res.errors) {
         alert(res.errors);

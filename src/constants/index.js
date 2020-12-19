@@ -1,4 +1,6 @@
-export const API_ROOT = 'https://cryptic-island-45793.herokuapp.com';
+import { backendUrl } from '../helpers/constants';
+
+export const API_ROOT = `${backendUrl}`;
 export const API_WS_ROOT = 'ws://localhost:3000/cable';
 export const HEADERS = {
   'Content-Type': 'application/json',

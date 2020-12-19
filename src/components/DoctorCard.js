@@ -7,7 +7,7 @@ const DoctorCard = (props) => {
   const { id, name, formatted_address, rating, photo } = props.doctor;
 
   return (
-    <Card inverted onClick={(e) => props.history.push(`/doctors/${id}`)}>
+    <Card onClick={(e) => props.history.push(`/doctors/${id}`)}>
       <Card.Content>
         <Card.Header>{name}</Card.Header>
       </Card.Content>

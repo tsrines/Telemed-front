@@ -3,6 +3,7 @@ import DoctorCard from '../components/DoctorCard';
 import Axios from 'axios';
 
 import React, { Component } from 'react';
+import { backendUrl } from '../helpers/constants';
 
 export default class SearchIndex extends Component {
   loadSearchIndex = async () => {
@@ -18,9 +19,7 @@ export default class SearchIndex extends Component {
 
       await csv.map(async (id) => {
         let doctorId = parseInt(id);
-        let res = await Axios.get(
-          `https://cryptic-island-45793.herokuapp.com/doctors/${doctorId}`
-        );
+        let res = await Axios.get(`${backendUrl}/doctors/${doctorId}`);
         let doc = res.data;
         index.push(doc);
         this.props.setSearchIndex(index);

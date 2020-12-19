@@ -3,6 +3,7 @@ import { Divider, Image, Container } from 'semantic-ui-react';
 import axios from 'axios';
 
 import ShowMenu from './ShowMenu';
+import { backendUrl } from '../../helpers/constants';
 
 class DoctorShow extends React.Component {
   state = {
@@ -35,10 +36,7 @@ class DoctorShow extends React.Component {
       user_id: this.props.currentUser.id,
     };
     try {
-      let res = await axios.post(
-        `https://cryptic-island-45793.herokuapp.com/favorites`,
-        favoriteObject
-      );
+      let res = await axios.post(`${backendUrl}/favorites`, favoriteObject);
       this.setState({ favorite: 1, id: res.data.id }, () => {
         this.props.loadUser();
       });
@@ -56,9 +54,7 @@ class DoctorShow extends React.Component {
       this.setState({ favorite: 0 });
     }
     try {
-      await axios.delete(
-        `https://cryptic-island-45793.herokuapp.com/favorites/${favorite.id}`
-      );
+      await axios.delete(`${backendUrl}/favorites/${favorite.id}`);
 
       this.setState({ favorite: 0 }, () => {
         this.props.loadUser();

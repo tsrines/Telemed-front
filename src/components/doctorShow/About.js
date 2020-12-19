@@ -32,10 +32,10 @@ const About = ({
 
       <Rating
         disabled={loading}
-        loading={loading}
+        loading={loading.toString()}
         onRate={(e, data) => rate(e, data)}
         icon='heart'
-        rating={favorite}
+        rating={favorite ? favorite : undefined}
         maxRating={1}
         size='massive'
       />
