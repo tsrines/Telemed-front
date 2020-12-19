@@ -56,9 +56,7 @@ class DoctorShow extends React.Component {
       this.setState({ favorite: 0 });
     }
     try {
-      let res = await axios.delete(
-        `http://localhost:3000/favorites/${favorite.id}`
-      );
+      await axios.delete(`http://localhost:3000/favorites/${favorite.id}`);
 
       this.setState({ favorite: 0 }, () => {
         this.props.loadUser();
