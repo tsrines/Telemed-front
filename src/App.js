@@ -194,17 +194,17 @@ class App extends React.Component {
   };
   async componentDidMount() {
     await this.loadUser();
-    this.getFavorites();
+    await this.getFavorites();
   }
 
   login = async (formData) => {
     try {
-      let res = await axios.post(`${backendUrl}/login`, formData);
-      if (res.errors) {
-        console.error(res.errors);
+      let { data } = await axios.post(`${backendUrl}/login`, formData);
+
+      if (data.error) {
+        alert(data.error);
       } else {
-        let currentUser = res.data;
-        this.setUser(currentUser);
+        this.setUser(data);
       }
     } catch (err) {
       console.error(err);
