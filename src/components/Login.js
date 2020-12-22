@@ -59,7 +59,13 @@ class Login extends React.Component {
                 placeholder='Password'
                 type='password'
               />
-              <Button onClick={this.formData} color='red' fluid size='large'>
+              <Button
+                loading={this.props.loading}
+                onClick={this.formData}
+                color='red'
+                fluid
+                size='large'
+              >
                 Login
               </Button>
             </Segment>

@@ -18,8 +18,10 @@ import NavBar from './components/layout/NavBar';
 import { Container } from 'semantic-ui-react';
 import Edit from './components/profile/Edit';
 import SearchIndex from './containers/SearchIndex';
-import ConversationsList from './components/ConversationsList';
+
 import { backendUrl } from './helpers/constants';
+import SearchHistoryTable from './components/profile/SearchHistoryTable';
+import SearchHistory from './components/profile/SearchHistory';
 
 class App extends React.Component {
   state = {
@@ -86,10 +88,6 @@ class App extends React.Component {
     this.loadingHandler(true);
     const apidocs = await fetchApiDoctors(payload);
 
-    // this.setState({ searchIndex: apidocs }, () => {
-    //   this.loadingHandler(false);
-    // });
-
     await apidocs.forEach(async (doc) => {
       let reviews = await createReviews(doc.place_id, doc.id);
       if (reviews) {
@@ -105,23 +103,9 @@ class App extends React.Component {
     this.saveSearch(apidocs);
   };
 
-  // isFavorite = () => {
-  //   let favoriteArray = this.state.currentUser.doctors.filter(
-  //     (doctor) => doctor.api_id == this.props.match.params.id
-  //   );
-  //   if (favoriteArray.length > 0) {
-  //     this.setState({
-  //       favorite: 1,
-  //     });
-  //   }
-  // };
-
   loadingHandler = (bool) => {
     this.setState({ loading: bool });
   };
-  // request to Google GeoCode API to turn string into Longitude/Latitude
-
-  // request to BetterDoc API with Long/Lat
 
   patchUser = async (formData) => {
     try {
@@ -198,6 +182,7 @@ class App extends React.Component {
   }
 
   login = async (formData) => {
+    this.loadingHandler(true);
     try {
       let { data } = await axios.post(`${backendUrl}/login`, formData);
 
@@ -255,6 +240,7 @@ class App extends React.Component {
     return (
       <>
         <Switch>
+          {/* <Route path='/searches/:id' component={SearchHistory} /> */}
           <Route
             exact
             path='/'
@@ -351,11 +337,7 @@ class App extends React.Component {
                   />
                 )}
               />
-              <Route
-                exact
-                path='/conversationlist'
-                render={(routerProps) => <ConversationsList {...routerProps} />}
-              />
+
               <Route
                 exact
                 path='/doctors/:id'
