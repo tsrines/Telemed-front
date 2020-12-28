@@ -20,8 +20,6 @@ import Edit from './components/profile/Edit';
 import SearchIndex from './containers/SearchIndex';
 
 import { backendUrl } from './helpers/constants';
-import SearchHistoryTable from './components/profile/SearchHistoryTable';
-import SearchHistory from './components/profile/SearchHistory';
 
 class App extends React.Component {
   state = {
@@ -87,7 +85,7 @@ class App extends React.Component {
   googleSearch = async (payload) => {
     this.loadingHandler(true);
     const apidocs = await fetchApiDoctors(payload);
-
+    console.log(apidocs);
     await apidocs.forEach(async (doc) => {
       let reviews = await createReviews(doc.place_id, doc.id);
       if (reviews) {
@@ -100,7 +98,7 @@ class App extends React.Component {
         doc.photos = photos;
       }
     });
-    this.saveSearch(apidocs);
+    await this.saveSearch(apidocs);
   };
 
   loadingHandler = (bool) => {
@@ -167,14 +165,11 @@ class App extends React.Component {
   };
 
   getFavorites = async () => {
-    // debugger
     try {
       let res = await axios.get(`${backendUrl}/favorites`);
       const favorites = res.data;
       this.setState({ favorites });
-    } catch (err) {
-      // debugger
-    }
+    } catch (err) {}
   };
   async componentDidMount() {
     await this.loadUser();

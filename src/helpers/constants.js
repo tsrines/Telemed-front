@@ -1,1 +1,1 @@
-export const backendUrl = 'https://blooming-garden-41309.herokuapp.com';
+export const backendUrl = 'http://localhost:3000';
