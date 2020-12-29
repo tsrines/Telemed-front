@@ -7,11 +7,8 @@ import { backendUrl } from '../helpers/constants';
 
 export default class SearchIndex extends Component {
   loadSearchIndex = async () => {
-    // this.props.loadUser();
     const index = [];
-    // debugger;
     const searchId = parseInt(this.props.match.params.searchId);
-
     const searches = this.props.currentUser.searches;
     try {
       let csv = searches.find((search) => searchId === search.id).csv;
@@ -32,7 +29,6 @@ export default class SearchIndex extends Component {
   };
 
   displayDoctors = () => {
-    // this.props.loadingHandler(false)
     let sortedIndex = [...this.props.searchIndex].sort((a, b) => a.id - b.id);
     return sortedIndex.map((doctor) => (
       <DoctorCard

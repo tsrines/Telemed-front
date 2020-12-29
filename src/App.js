@@ -68,7 +68,6 @@ class App extends React.Component {
     let data;
     searchedDoctors.forEach((doc) => ids.push(doc.id));
     let csv = ids.join(',');
-    //
     const payload = {
       csv,
       user_id,

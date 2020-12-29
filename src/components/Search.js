@@ -46,7 +46,6 @@ class Search extends React.Component {
       payload.query = query;
       await this.props.googleSearch(payload);
     }
-    // this.props.loadingHandler(false);
   };
   componentDidMount() {
     const browserLocation = localStorage.getItem('browserLocationEnabled');
@@ -156,7 +155,6 @@ class Search extends React.Component {
                   <Label>How far are you willing to travel?</Label>
                   <Input
                     fluid
-                    // label={'Travel Distance'}
                     required
                     name='distance'
                     onChange={(e) => this.onChange(e)}
