@@ -73,7 +73,6 @@ class App extends React.Component {
       csv,
       user_id,
     };
-    // ;
     try {
       let res = await axios.post(`${backendUrl}/searches`, payload);
       data = res.data;
@@ -116,7 +115,6 @@ class App extends React.Component {
         formData
       );
 
-      //
       if (res.data.errors) {
         console.error(res.data.errors);
       } else {
@@ -128,7 +126,6 @@ class App extends React.Component {
     }
   };
   getDoctorById = async (id) => {
-    //
     try {
       let res = await axios.get(`${backendUrl}/doctors/${id}`);
 
@@ -152,7 +149,6 @@ class App extends React.Component {
   loadUser = async () => {
     const token = localStorage.token;
     if (token) {
-      //get user info
       try {
         let res = await axios.get(`${backendUrl}/auto_login`, {
           headers: { Authorization: token },
@@ -170,13 +166,11 @@ class App extends React.Component {
   };
 
   getFavorites = async () => {
-    // debugger
     try {
       let res = await axios.get(`${backendUrl}/favorites`);
       const favorites = res.data;
       this.setState({ favorites });
     } catch (err) {
-      // debugger
     }
   };
   async componentDidMount() {
@@ -202,7 +196,6 @@ class App extends React.Component {
   signUp = async (formData) => {
     try {
       let res = await axios.post(`${backendUrl}/users`, formData);
-      // debugger;
       if (res.errors) {
         alert(res.errors);
       } else {
@@ -244,7 +237,6 @@ class App extends React.Component {
     return (
       <>
         <Switch>
-          {/* <Route path='/searches/:id' component={SearchHistory} /> */}
           <Route
             exact
             path='/'
@@ -353,7 +345,6 @@ class App extends React.Component {
                     loadingHandler={this.loadingHandler}
                     loading={this.state.loading}
                     getDoctorById={this.getDoctorById}
-                    rate={this.rate}
                     doctors={this.state.doctors}
                     isFavorite={this.isFavorite}
                     currentUser={this.state.currentUser}
