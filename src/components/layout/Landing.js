@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Button, Header } from 'semantic-ui-react';
 
-const Landing = ({ history, currentUser }) => {
+const Landing = ({ history, currentUser, guestHandler, loading }) => {
   if (currentUser.id) return <Redirect to={'/profile'} />;
   return (
     <section className='landing'>
@@ -17,6 +17,7 @@ const Landing = ({ history, currentUser }) => {
           </p>
           <div className='buttons'>
             <Button
+              disabled={loading}
               color='red'
               onClick={() => history.push('/signup')}
               className='btn btn-primary'
@@ -24,6 +25,7 @@ const Landing = ({ history, currentUser }) => {
               Sign Up
             </Button>
             <Button
+              disabled={loading}
               color='red'
               onClick={() => history.push('/login')}
               className='btn btn-light'
@@ -31,6 +33,16 @@ const Landing = ({ history, currentUser }) => {
               Login
             </Button>
           </div>
+          <Button
+            disabled={loading}
+            style={{ marginTop: `15px` }}
+            color='red'
+            onClick={guestHandler}
+            className='btn btn-light'
+            loading={loading}
+          >
+            Guest
+          </Button>
         </div>
       </div>
     </section>

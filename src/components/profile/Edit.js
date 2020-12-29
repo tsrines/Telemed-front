@@ -16,11 +16,7 @@ export default class Edit extends Component {
     const { open } = this.state;
 
     return (
-      <Form
-        style={{ padding: '3em' }}
-        // onSubmit={this.props.editProfileOnSubmit}
-        display='flex'
-      >
+      <Form style={{ padding: '3em' }} display='flex'>
         <FormField>
           <Input
             label='First Name'
@@ -91,7 +87,6 @@ export default class Edit extends Component {
           onClick={this.show}
         />
         <Confirm
-          // onConfirm={this.props.editProfileOnSubmit}
           content={'Satisfied with your changes?'}
           open={open}
           type='submit'

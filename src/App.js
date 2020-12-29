@@ -34,6 +34,10 @@ class App extends React.Component {
     errors: [],
   };
 
+  guestHandler = (e) => {
+    this.login({ email: `guest@guest.com`, password: `123123` });
+  };
+
   editProfileOnChange = (e) => {
     this.setState({
       ...this.state,
@@ -64,12 +68,10 @@ class App extends React.Component {
     let data;
     searchedDoctors.forEach((doc) => ids.push(doc.id));
     let csv = ids.join(',');
-    //
     const payload = {
       csv,
       user_id,
     };
-    // ;
     try {
       let res = await axios.post(`${backendUrl}/searches`, payload);
       data = res.data;
@@ -112,17 +114,17 @@ class App extends React.Component {
         formData
       );
 
-      //
       if (res.data.errors) {
         console.error(res.data.errors);
       } else {
         let currentUser = res.data;
         this.setState({ currentUser }, () => this.loadingHandler(false));
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
   };
   getDoctorById = async (id) => {
-    //
     try {
       let res = await axios.get(`${backendUrl}/doctors/${id}`);
 
@@ -130,7 +132,6 @@ class App extends React.Component {
       this.setState({ doctorShow }, () => this.loadingHandler(false));
     } catch (err) {
       console.error(err);
-      throw err;
     }
   };
 
@@ -147,7 +148,6 @@ class App extends React.Component {
   loadUser = async () => {
     const token = localStorage.token;
     if (token) {
-      //get user info
       try {
         let res = await axios.get(`${backendUrl}/auto_login`, {
           headers: { Authorization: token },
@@ -194,7 +194,6 @@ class App extends React.Component {
   signUp = async (formData) => {
     try {
       let res = await axios.post(`${backendUrl}/users`, formData);
-      // debugger;
       if (res.errors) {
         alert(res.errors);
       } else {
@@ -207,26 +206,27 @@ class App extends React.Component {
     this.loadingHandler(false);
   };
   setUser = (currentUser) => {
+    this.loadingHandler(true);
     this.setState(
       {
         currentUser: currentUser.user,
       },
       () => {
         localStorage.token = currentUser.token;
-        this.loadUser();
+        this.loadUser().then((data) => this.loadingHandler(false));
         this.props.history.push('/search');
       }
     );
   };
 
   logout = () => {
-    this.props.history.push('/');
     this.setState(
       {
         currentUser: {},
       },
       () => {
         localStorage.removeItem('token');
+        this.props.history.push('/');
       }
     );
   };
@@ -235,13 +235,13 @@ class App extends React.Component {
     return (
       <>
         <Switch>
-          {/* <Route path='/searches/:id' component={SearchHistory} /> */}
           <Route
             exact
             path='/'
             render={(routerProps) => (
               <Landing
                 {...routerProps}
+                guestHandler={this.guestHandler}
                 currentUser={this.state.currentUser}
                 loading={this.state.loading}
               />
@@ -343,7 +343,6 @@ class App extends React.Component {
                     loadingHandler={this.loadingHandler}
                     loading={this.state.loading}
                     getDoctorById={this.getDoctorById}
-                    rate={this.rate}
                     doctors={this.state.doctors}
                     isFavorite={this.isFavorite}
                     currentUser={this.state.currentUser}
