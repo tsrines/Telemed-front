@@ -20,8 +20,6 @@ import Edit from './components/profile/Edit';
 import SearchIndex from './containers/SearchIndex';
 
 import { backendUrl } from './helpers/constants';
-import SearchHistoryTable from './components/profile/SearchHistoryTable';
-import SearchHistory from './components/profile/SearchHistory';
 
 class App extends React.Component {
   state = {
@@ -121,7 +119,9 @@ class App extends React.Component {
         let currentUser = res.data;
         this.setState({ currentUser }, () => this.loadingHandler(false));
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
   };
   getDoctorById = async (id) => {
     //
@@ -132,7 +132,6 @@ class App extends React.Component {
       this.setState({ doctorShow }, () => this.loadingHandler(false));
     } catch (err) {
       console.error(err);
-      throw err;
     }
   };
 
@@ -212,26 +211,27 @@ class App extends React.Component {
     this.loadingHandler(false);
   };
   setUser = (currentUser) => {
+    this.loadingHandler(true);
     this.setState(
       {
         currentUser: currentUser.user,
       },
       () => {
         localStorage.token = currentUser.token;
-        this.loadUser();
+        this.loadUser().then((data) => this.loadingHandler(false));
         this.props.history.push('/search');
       }
     );
   };
 
   logout = () => {
-    this.props.history.push('/');
     this.setState(
       {
         currentUser: {},
       },
       () => {
         localStorage.removeItem('token');
+        this.props.history.push('/');
       }
     );
   };
