@@ -4,19 +4,35 @@ import Reviews from './Reviews';
 import Photos from './Photos';
 import { Label, Menu, Tab, Icon } from 'semantic-ui-react';
 
-const ShowMenu = ({ favorite, rate, doctor, loadUser, reviews, photos,loading,loadingHandler }) => {
+const ShowMenu = ({
+  favorite,
+  doctor,
+  loadUser,
+  reviews,
+  photos,
+  loading,
+  loadingHandler,
+  currentUser,
+}) => {
   const panes = [
     {
       menuItem: { key: 'about', icon: 'user', content: 'About' },
       render: () => (
         <Tab.Pane>
-          <About loadUser={loadUser}loading={loading} loadingHandler={loadingHandler} favorite={favorite} rate={rate} doctor={doctor} />
+          <About
+            currentUser={currentUser}
+            loadUser={loadUser}
+            loading={loading}
+            loadingHandler={loadingHandler}
+            favorite={favorite}
+            doctor={doctor}
+          />
         </Tab.Pane>
       ),
     },
     {
       menuItem: (
-        <Menu.Item  key='reviews'>
+        <Menu.Item key='reviews'>
           <Icon name='image' />
           Reviews
           <Label color='red' inverted='true'>
