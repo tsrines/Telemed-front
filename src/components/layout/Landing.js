@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Button, Header } from 'semantic-ui-react';
 
-const Landing = ({ history, currentUser }) => {
+const Landing = ({ history, currentUser, guestHandler }) => {
   if (currentUser.id) return <Redirect to={'/profile'} />;
   return (
     <section className='landing'>
@@ -31,6 +31,14 @@ const Landing = ({ history, currentUser }) => {
               Login
             </Button>
           </div>
+          <Button
+            style={{ marginTop: `15px` }}
+            color='red'
+            onClick={guestHandler}
+            className='btn btn-light'
+          >
+            Guest
+          </Button>
         </div>
       </div>
     </section>

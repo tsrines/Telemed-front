@@ -34,6 +34,10 @@ class App extends React.Component {
     errors: [],
   };
 
+  guestHandler = (e) => {
+    this.login({ email: `guest@guest.com`, password: `123123` });
+  };
+
   editProfileOnChange = (e) => {
     this.setState({
       ...this.state,
@@ -247,6 +251,7 @@ class App extends React.Component {
             render={(routerProps) => (
               <Landing
                 {...routerProps}
+                guestHandler={this.guestHandler}
                 currentUser={this.state.currentUser}
                 loading={this.state.loading}
               />
